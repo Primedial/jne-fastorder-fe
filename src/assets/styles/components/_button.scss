@@ -1,0 +1,9 @@
+.el-button {
+  border-radius: 6px !important;
+  font-family: 'Plus Jakarta Sans', sans-serif !important;
+  font-weight: 600;
+
+  &.is-circle{
+    border-radius: 50% !important;
+  }
+}

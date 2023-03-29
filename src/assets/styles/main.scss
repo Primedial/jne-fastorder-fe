@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600&display=swap');
+
+$primary: #FE634E;
+
+$--color-primary: $primary;
+/* icon font path, required */
+$--font-path: '~element-ui/lib/theme-chalk/fonts';
+@import '~element-ui/packages/theme-chalk/src/index';
+@import './utils/index.css';
+@import './pages/index.scss';
+@import './components/index.scss';
+
+body {
+  padding: 0;
+  margin: 0;
+  font-size: 16px;
+  background-color: #F3F6FA;
+  color: #000;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  height: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+* {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}

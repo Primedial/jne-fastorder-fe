@@ -1,0 +1,43 @@
+{
+  "name": "fo-fe",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "apexcharts": "^3.37.2",
+    "axios": "^1.3.4",
+    "core-js": "^3.8.3",
+    "element-ui": "^2.15.13",
+    "register-service-worker": "^1.7.2",
+    "vue": "^2.6.14",
+    "vue-apexcharts": "^1.6.2",
+    "vue-axios": "^3.5.2",
+    "vue-eva-icons": "^1.1.1",
+    "vue-router": "^3.5.1",
+    "vuex": "^3.6.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.16",
+    "@babel/eslint-parser": "^7.12.16",
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-plugin-pwa": "~5.0.0",
+    "@vue/cli-plugin-router": "~5.0.0",
+    "@vue/cli-plugin-vuex": "~5.0.0",
+    "@vue/cli-service": "~5.0.0",
+    "@vue/eslint-config-airbnb": "^6.0.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-vue": "^8.0.3",
+    "eslint-plugin-vuejs-accessibility": "^1.1.0",
+    "sass": "^1.60.0",
+    "sass-loader": "^13.2.2",
+    "vue-template-compiler": "^2.6.14"
+  },
+  "_id": "fo-fe@0.1.0",
+  "readme": "ERROR: No README data found!"
+}

@@ -1,0 +1,10 @@
+.el-card {
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: rgba(99, 99, 99, 0.08) 0px 2px 8px 0px !important;
+  border: none !important;
+
+  &.padding-sm .el-card__body {
+    padding: 10px 15px;
+  }
+}
