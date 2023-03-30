@@ -1,0 +1,21 @@
+.text-center {
+  text-align: center;
+}
+.text-right {
+  text-align: right;
+}
+.bold {
+  font-weight: 700;;
+}
+.black {
+  font-weight: 800;;
+}
+.text-gray {
+  color: #8e8e8e;
+}
+.text-light {
+  color: #fff;
+}
+.text-primary {
+  color: #FE634E;
+}

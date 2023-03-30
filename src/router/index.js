@@ -21,7 +21,7 @@ const routes = [
   {
     path: '/dashboard',
     component: DashboardLayout,
-    // redirect: '/dashboard/overview',
+    redirect: '/dashboard/overview',
     children: [...dashboardRoutes],
   },
   {

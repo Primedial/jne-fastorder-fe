@@ -1,0 +1,25 @@
+.app-wrapper {
+  position: relative;
+  left: calc(250px + 1rem);
+  width: calc(100vw - 250px - 3rem);
+  top: 64px;
+  padding: 1rem;
+}
+
+.sidebar-wrapper {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  width: 250px;
+  height: calc(100vh - 2rem);
+  overflow-y: auto;
+  border-radius: 12px;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  .el-menu {
+    height: 100%;
+  }
+}
