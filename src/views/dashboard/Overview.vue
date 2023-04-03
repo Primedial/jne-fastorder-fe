@@ -1,40 +1,40 @@
 <template>
   <div>
     <h1>Overview</h1>
-    <el-row :gutter="20" class="mb-2">
-      <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8">
+    <el-row :gutter="20">
+      <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8" class="mb-2">
         <el-card class="bg-primary">
           <p class="text-light mt-0">Total Saldo</p>
           <h2 class="text-light black text-right">Rp.100,000,000</h2>
         </el-card>
       </el-col>
-      <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8">
+      <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8" class="mb-2">
         <el-card>
           <p class="text-gray mt-0">Saldo COD</p>
           <h2 class="black text-right">Rp.100,000,000</h2>
         </el-card>
       </el-col>
-      <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8">
+      <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8" class="mb-2">
         <el-card>
           <p class="text-gray mt-0">Cashback Fee</p>
           <h2 class="black text-right">Rp.100,000,000</h2>
         </el-card>
       </el-col>
     </el-row>
-    <el-row :gutter="20" class="mb-2">
-      <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8">
+    <el-row :gutter="20">
+      <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8" class="mb-2">
         <el-card>
           <p class="text-gray mt-0">Estimasi Saldo COD</p>
           <h2 class="black text-right">Rp.100,000,000</h2>
         </el-card>
       </el-col>
-      <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8">
+      <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8" class="mb-2">
         <el-card>
           <p class="text-gray mt-0">Estimasi Cashback</p>
           <h2 class="black text-right">Rp.100,000,000</h2>
         </el-card>
       </el-col>
-      <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8">
+      <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8" class="mb-2">
         <el-card>
           <p class="text-gray mt-0">Total Pengiriman</p>
           <h2 class="black text-right">25</h2>
@@ -42,7 +42,7 @@
       </el-col>
     </el-row>
     <el-row :gutter="20">
-      <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+      <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="mb-2">
         <el-card>
           <h3 class="my-0 text-gray">Jumlah Pengiriman</h3>
           <apex-charts
@@ -53,7 +53,7 @@
           ></apex-charts>
         </el-card>
       </el-col>
-      <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+      <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="mb-2">
         <el-card>
           <h3 class="my-0 text-gray">Tipe Pengiriman</h3>
           <apex-charts

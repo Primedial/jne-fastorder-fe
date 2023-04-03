@@ -24,6 +24,8 @@
 </template>
 
 <script>
+import auth from '@/api/auth';
+
 export default {
   data() {
     return {
@@ -43,9 +45,20 @@ export default {
   },
   methods: {
     submit() {
-      this.$refs.form.validate((valid) => {
+      this.$refs.form.validate(async (valid) => {
         if (valid) {
-          this.$router.push({ name: 'dashboard-overview' });
+          try {
+            const data = {
+              email: this.model.email,
+              password: this.model.password,
+            };
+            const res = await auth.login(data);
+            localStorage.setItem('token', res.data.token);
+            await this.$store.dispatch('auth/introspect');
+            await this.$router.push({ name: 'dashboard-overview' });
+          } catch (e) {
+            console.log(e);
+          }
         }
       });
     },

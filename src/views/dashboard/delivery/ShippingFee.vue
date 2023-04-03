@@ -33,11 +33,39 @@
           <el-input placeholder="Kg" v-model="input"></el-input>
         </el-col>
       </el-row>
-      <el-button type="primary" class="w-full mt-3">Cek Ongkir</el-button>
+      <el-button type="primary" class="w-full mt-3 py-2">Cek Ongkir</el-button>
     </el-card>
   </div>
 </template>
 
 <script>
-export default {};
+import awbApi from '@/api/awb';
+
+export default {
+  data() {
+    return {
+      model: {
+        destination: '',
+        origin: '',
+        weight: null,
+      },
+      destinations: [],
+      origins: [],
+    };
+  },
+  created() {
+    this.fetchAllData();
+  },
+  methods: {
+    async fetchAllData() {
+      try {
+        const dest = await awbApi.getDestinations();
+        const origins = await awbApi.getOrigins();
+        console.log({ dest, origins });
+      } catch (e) {
+        console.log(e);
+      }
+    },
+  },
+};
 </script>
