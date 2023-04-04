@@ -59,7 +59,12 @@
           <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8">
             <h3>Berat</h3>
             <p class="text-gray">dalam satuan Kg.</p>
-            <el-input placeholder="Kg" v-model="model.weight"></el-input>
+            <el-form-item
+              prop="weight"
+              :rules="{ required: true, trigger: 'blur', message: 'Berat wajib diisi' }"
+            >
+              <el-input placeholder="Kg" v-model="model.weight"></el-input>
+            </el-form-item>
           </el-col>
         </el-row>
       </el-form>
@@ -71,8 +76,8 @@
       >Cek Ongkir</el-button>
     </el-card>
     <div v-if="isSearched" class="mt-2">
-      <div v-if="isSearched && prices.length === 0">
-        <p>Data tidak ditemukan.</p>
+      <div v-if="isSearched && prices.length === 0" class="mt-3">
+        <el-empty description="Data tidak ditemukan."></el-empty>
       </div>
       <el-row :gutter="20">
         <el-col
@@ -141,6 +146,7 @@ export default {
   },
   methods: {
     async fetchAllData() {
+      this.loading = true;
       try {
         const dest = await awbApi.getDestinations();
         const origins = await awbApi.getOrigins();
@@ -149,6 +155,7 @@ export default {
       } catch (e) {
         // do nothing
       }
+      this.loading = false;
     },
     remoteMethodOrigin(str) {
       this.searchOrigin = str;
@@ -163,7 +170,14 @@ export default {
           try {
             const res = await awbApi.checkTarrif(this.model);
             this.isSearched = true;
-            this.prices = res.data.price;
+            this.prices = res.data.price || [];
+            if (res.data.error) {
+              this.$notify({
+                type: 'error',
+                title: 'Error',
+                message: res.data.error,
+              });
+            }
           } catch (e) {
             // do nothing
           }
