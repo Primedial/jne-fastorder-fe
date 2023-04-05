@@ -58,12 +58,21 @@
                     label="Kota asal kiriman"
                     :rules="{ required: true, trigger: 'blur', message: 'Kota asal pengirim wajib diisi' }"
                   >
-                    <el-select v-model="model.shipper.city_code" placeholder="Pilih asal" class="w-full" value-key="city_code">
+                    <el-select
+                      v-model="model.shipper.city_code"
+                      filterable
+                      remote
+                      reserve-keyword
+                      placeholder="Pilih kota pengiriman"
+                      :remote-method="remoteMethodOrigin"
+                      class="w-full"
+                      value-key="city_code"
+                    >
                       <el-option
-                        v-for="origin in origins"
-                        :key="origin.city_code"
-                        :label="origin.city_name"
-                        :value="origin"
+                        v-for="item in origins"
+                        :key="`origin-${item.city_code}`"
+                        :label="item.city_name"
+                        :value="item"
                       >
                       </el-option>
                     </el-select>
@@ -139,12 +148,21 @@
                     label="Kota asal kiriman"
                     :rules="{ required: true, trigger: 'blur', message: 'Kota penerima wajib diisi' }"
                   >
-                    <el-select v-model="model.receiver.city_code" placeholder="Pilih asal" class="w-full" value-key="city_code">
+                    <el-select
+                      v-model="model.receiver.city_code"
+                      filterable
+                      remote
+                      reserve-keyword
+                      placeholder="Pilih kota destinasi"
+                      :remote-method="remoteMethodDestination"
+                      class="w-full"
+                      value-key="city_code"
+                    >
                       <el-option
-                        v-for="destination in destinations"
-                        :key="destination.city_code"
-                        :label="destination.city_name"
-                        :value="destination"
+                        v-for="item in destinations"
+                        :key="`destination-${item.city_code}`"
+                        :label="item.city_name"
+                        :value="item"
                       >
                       </el-option>
                     </el-select>
@@ -606,6 +624,16 @@ export default {
       } else {
         this.selectedShipper = { ...event };
       }
+    },
+    async remoteMethodOrigin(str) {
+      this.searchOrigin = str;
+      const origins = await awb.getOrigins({ q: str });
+      this.origins = origins.data;
+    },
+    async remoteMethodDestination(str) {
+      this.searchDestination = str;
+      const dest = await awb.getDestinations({ q: str });
+      this.destinations = dest.data;
     },
     async submit() {
       switch (this.currentStep) {
