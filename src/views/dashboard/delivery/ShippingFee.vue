@@ -159,19 +159,15 @@ export default {
       }
       this.loading = false;
     },
-    remoteMethodOrigin(str) {
+    async remoteMethodOrigin(str) {
       this.searchOrigin = str;
-      // const arr = JSON.parse(JSON.stringify(this.origins));
-      // const indexedArray = {};
-      // for (let i = 0; i < arr.length; i += 1) {
-      //   const key = arr[i].city_name.toLowerCase().split(',');
-      //   indexedArray[key] = arr[i];
-      // }
-      // const searchResult = indexedArray[str.toLowerCase()];
-      // console.log(searchResult);
+      const origins = await awbApi.getOrigins({ q: str });
+      this.origins = origins.data;
     },
-    remoteMethodDestination(str) {
+    async remoteMethodDestination(str) {
       this.searchDestination = str;
+      const dest = await awbApi.getDestinations({ q: str });
+      this.destinations = dest.data;
     },
     submit() {
       this.$refs.form.validate(async (valid) => {

@@ -122,7 +122,7 @@
                     :rules="{ required: true, trigger: 'blur', message: 'Nama penerima wajib diisi' }"
                   >
                     <el-input
-                      v-model="model.senderName"
+                      v-model="model.receiver.name"
                       placeholder="Nama pengirim"
                       clearable
                     ></el-input>
@@ -335,7 +335,7 @@
             <el-card>
               <h2 class="text-primary mt-0">Summary</h2>
               <el-row :gutter="16" class="mb-2">
-                <el-col :span="5">
+                <el-col :span="6">
                   <div class="mr-3">
                     <small class="text-gray"><strong>Pengirim</strong></small>
                     <h4 class="mb-1">{{ selectedShipper.name }}</h4>
@@ -345,7 +345,7 @@
                     <small class="block text-gray">{{ selectedShipper.phone_no }}</small>
                   </div>
                 </el-col>
-                <el-col :span="5">
+                <el-col :span="6">
                   <div class="mr-3">
                     <small class="text-gray"><strong>Penerima</strong></small>
                     <h4 class="mb-1">{{ selectedReceiver.name }}</h4>
