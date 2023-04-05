@@ -67,6 +67,7 @@
                       :remote-method="remoteMethodOrigin"
                       class="w-full"
                       value-key="city_code"
+                      @change="($event) => onHandleChange($event, 'shipper')"
                     >
                       <el-option
                         v-for="item in origins"
@@ -157,6 +158,7 @@
                       :remote-method="remoteMethodDestination"
                       class="w-full"
                       value-key="city_code"
+                      @change="($event) => onHandleChange($event, 'receiver')"
                     >
                       <el-option
                         v-for="item in destinations"
@@ -618,11 +620,19 @@ export default {
         // do nothing
       }
     },
-    onHandleChange(event) {
-      if (event.contact_type === contactUsageType.RECEIVER) {
-        this.selectedReceiver = { ...event };
-      } else {
-        this.selectedShipper = { ...event };
+    onHandleChange(event, type) {
+      if (type) {
+        if (type === 'shipper') {
+          this.selectedShipper = { ...event };
+        } else if (type === 'receiver') {
+          this.selectedReceiver = { ...event };
+        }
+      } else if (!type) {
+        if (event.contact_type === contactUsageType.RECEIVER) {
+          this.selectedReceiver = { ...event };
+        } else {
+          this.selectedShipper = { ...event };
+        }
       }
     },
     async remoteMethodOrigin(str) {
