@@ -1,3 +1,4 @@
+import { Message } from 'element-ui';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 
@@ -13,6 +14,16 @@ export default {
         config.headers.Authorization = `Bearer ${token}`;
       }
       return config;
+    });
+
+    instance.interceptors.response.use((response) => response, (error) => {
+      if (error?.response?.data?.message) {
+        Message({
+          type: 'error',
+          message: error?.response?.data?.message,
+        });
+      }
+      return Promise.reject(error);
     });
 
     Vue.use(VueAxios, instance);

@@ -3,6 +3,7 @@ import Monitoring from '@/views/dashboard/Monitoring.vue';
 import ShippingFee from '@/views/dashboard/delivery/ShippingFee.vue';
 import CreditBalance from '@/views/dashboard/CreditBalance.vue';
 import CreateAWB from '@/views/dashboard/delivery/CreateAWB.vue';
+import DeliveryOverview from '@/views/dashboard/delivery/DeliveryOverview.vue';
 
 export default [
   {
@@ -16,7 +17,7 @@ export default [
     component: Monitoring,
   },
   {
-    path: 'shipping/shipping-fee',
+    path: 'shipping/ongkos-kirim',
     name: 'dashboard-shipping-fee',
     component: ShippingFee,
   },
@@ -26,8 +27,13 @@ export default [
     component: CreateAWB,
   },
   {
-    path: 'credit-balance',
-    name: 'dashboard-shipping-fee',
+    path: 'wallet',
+    name: 'dashboard-wallet',
     component: CreditBalance,
+  },
+  {
+    path: 'shipping/riwayat-pengiriman',
+    name: 'dashboard-delivery',
+    component: DeliveryOverview,
   },
 ];

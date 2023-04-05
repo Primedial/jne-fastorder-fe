@@ -40,24 +40,30 @@ const router = new VueRouter({
 
 const publicRoutes = ['/login', '/register'];
 
-router.beforeEach(async (to, from, next) => {
-  try {
-    if (!store.getters['auth/isLoaded']) {
-      await store.dispatch('auth/introspect');
+const verifyRoutePath = (to, next) => {
+  const destinationPath = to.matched[0].path;
+  if (publicRoutes.includes(destinationPath)) {
+    if (store.getters['auth/isLoggedIn']) {
+      return next({ path: '/dashboard/overview' });
     }
-    if (store.getters['auth/isLoggedIn'] && store.getters['auth/isLoaded']) {
-      if (publicRoutes.includes(to.path)) {
-        console.log('KESINI GA');
-        next({ name: 'dashboard-overview' });
-      } else {
-        next();
-      }
-    } else {
-      next('/login');
-    }
-  } catch (e) {
-    next('/login');
+    return next();
   }
+  if (store.getters['auth/isLoggedIn']) {
+    return next();
+  }
+  return next({ path: '/login' });
+};
+
+router.beforeEach(async (to, from, next) => {
+  if (!store.getters['auth/isLoaded']) {
+    try {
+      await store.dispatch('auth/introspect');
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  document.title = to.meta.title;
+  verifyRoutePath(to, next);
 });
 
 export default router;

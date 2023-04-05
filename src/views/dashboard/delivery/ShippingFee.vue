@@ -125,6 +125,8 @@ export default {
       searchDestination: '',
       prices: [],
       isSearched: false,
+      indexedOrigins: {},
+      indexedDestination: {},
     };
   },
   created() {
@@ -159,6 +161,14 @@ export default {
     },
     remoteMethodOrigin(str) {
       this.searchOrigin = str;
+      // const arr = JSON.parse(JSON.stringify(this.origins));
+      // const indexedArray = {};
+      // for (let i = 0; i < arr.length; i += 1) {
+      //   const key = arr[i].city_name.toLowerCase().split(',');
+      //   indexedArray[key] = arr[i];
+      // }
+      // const searchResult = indexedArray[str.toLowerCase()];
+      // console.log(searchResult);
     },
     remoteMethodDestination(str) {
       this.searchDestination = str;

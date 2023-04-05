@@ -33,3 +33,18 @@ body {
 .bg-gray {
   background-color: #d3dce6;
 }
+
+.cursor {
+  cursor: pointer;
+}
+
+button.reset {
+  width: 100%;
+  height: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  text-align: unset;
+}

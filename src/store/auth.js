@@ -33,7 +33,7 @@ const actions = {
       commit('SET_LOGGED_IN');
       commit('SET_USER_DETAIL', res.data);
     } catch (e) {
-      console.log(e);
+      // do nothing
     }
     commit('SET_LOADED');
   },

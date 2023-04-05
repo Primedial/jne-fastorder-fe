@@ -15,17 +15,21 @@ export default [
     icon: 'swap-outline',
     children: [
       {
-        path: 'shipping-fee',
+        path: 'ongkos-kirim',
         title: 'Cek Ongkir',
       },
       {
         path: 'resi-satuan',
         title: 'Resi Satuan',
       },
+      {
+        path: 'riwayat-pengiriman',
+        title: 'Riwayat Pengiriman',
+      },
     ],
   },
   {
-    path: 'credit-balance',
+    path: 'wallet',
     title: 'Saldo',
     icon: 'credit-card-outline',
   },

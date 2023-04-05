@@ -30,8 +30,19 @@ async function checkTarrif(data) {
   return res.data;
 }
 
+async function generateAWB(data) {
+  const res = await Vue.axios({
+    url: AWB_BASE_URL,
+    method: 'POST',
+    data,
+  });
+
+  return res.data;
+}
+
 export default {
   getDestinations,
   getOrigins,
   checkTarrif,
+  generateAWB,
 };
