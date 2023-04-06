@@ -14,7 +14,7 @@
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <el-card>
               <h2 class="text-primary">Data Pengirim</h2>
-              <el-checkbox v-model="newSender">Buat pengirim baru</el-checkbox>
+              <el-checkbox v-model="newSender" @change="($event) => onToggleNewContact($event, 'sender')">Buat pengirim baru</el-checkbox>
               <transition name="el-fade-in">
                 <el-form-item
                   v-if="!newSender"
@@ -105,7 +105,7 @@
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <el-card>
               <h2 class="text-primary">Data Penerima</h2>
-              <el-checkbox v-model="newReceipient">Buat penerima baru</el-checkbox>
+              <el-checkbox v-model="newReceipient" @change="($event) => onToggleNewContact($event, 'receiver')">Buat penerima baru</el-checkbox>
               <transition name="el-fade-in">
                 <el-form-item
                   v-if="!newReceipient"
@@ -358,21 +358,21 @@
                 <el-col :span="6">
                   <div class="mr-3">
                     <small class="text-gray"><strong>Pengirim</strong></small>
-                    <h4 class="mb-1">{{ selectedShipper.name }}</h4>
-                    <small class="block text-gray">{{ selectedShipper.address }}</small>
-                    <small class="block text-gray">{{ selectedShipper.city_name }},
-                      {{ selectedShipper.postal_code }}</small>
-                    <small class="block text-gray">{{ selectedShipper.phone_no }}</small>
+                    <h4 class="mb-1">{{ selectedShipper.name || model.shipper?.name }}</h4>
+                    <small class="block text-gray">{{ selectedShipper.address || model.shipper.address}}</small>
+                    <small class="block text-gray">{{ selectedShipper?.city_name }},
+                      {{ selectedShipper.postal_code || model.shipper?.postal_code }}</small>
+                    <small class="block text-gray">{{ selectedShipper.phone_no || model.shipper?.phone_no }}</small>
                   </div>
                 </el-col>
                 <el-col :span="6">
                   <div class="mr-3">
                     <small class="text-gray"><strong>Penerima</strong></small>
-                    <h4 class="mb-1">{{ selectedReceiver.name }}</h4>
-                    <small class="block text-gray">{{ selectedReceiver.address }}</small>
+                    <h4 class="mb-1">{{ selectedReceiver.name || model.receiver?.name }}</h4>
+                    <small class="block text-gray">{{ selectedReceiver.address || model.receiver?.address }}</small>
                     <small class="block text-gray">{{ selectedReceiver.city_name }},
-                      {{ selectedReceiver.postal_code }}</small>
-                    <small class="block text-gray">{{ selectedReceiver.phone_no }}</small>
+                      {{ selectedReceiver.postal_code || model.receiver?.postal_code }}</small>
+                    <small class="block text-gray">{{ selectedReceiver.phone_no || model.receiver?.phone_no }}</small>
                   </div>
                 </el-col>
               </el-row>
@@ -603,6 +603,34 @@ export default {
         // do nothing
       }
     },
+    onToggleNewContact(evt, type) {
+      if (!evt) {
+        switch (type) {
+          case 'sender':
+            this.model.shipper = {
+              name: '',
+              phone_no: '',
+              postal_code: '',
+              city_code: '',
+              city_name: '',
+              address: '',
+            };
+            break;
+          case 'receiver':
+            this.model.shipper = {
+              name: '',
+              phone_no: '',
+              postal_code: '',
+              city_code: '',
+              city_name: '',
+              address: '',
+            };
+            break;
+          default:
+            break;
+        }
+      }
+    },
     async getTarrifs() {
       try {
         const data = {
@@ -686,22 +714,22 @@ export default {
           is_cod: this.model.cod === serviceType.COD,
           cod_amount: 0,
           insured: this.model.insured,
-          shipper: !this.model.shipper_contact_id || {
+          shipper: !this.model.shipper_contact_id ? {
             name: shipper.name,
             phone_no: shipper.phone_no,
             city_code: shipper.city_code?.city_code,
             city_name: shipper.city_code?.city_name,
             postal_code: shipper.postal_code,
             address: shipper.address,
-          },
-          receiver: !this.model.receiver_contact_id || {
+          } : null,
+          receiver: !this.model.receiver_contact_id ? {
             name: receiver.name,
             phone_no: receiver.phone_no,
             city_code: receiver.city_code?.city_code,
             city_name: receiver.city_code?.city_name,
             postal_code: receiver.postal_code,
             address: receiver.address,
-          },
+          } : null,
         };
         const res = await awb.generateAWB(payload);
         this.generatedAwb = res.data.cnote_no;

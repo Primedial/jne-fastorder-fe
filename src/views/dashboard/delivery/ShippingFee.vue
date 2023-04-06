@@ -23,9 +23,11 @@
                 <el-option
                   v-for="item in filteredOrigins"
                   :key="item.city_code"
-                  :label="item.city_name"
                   :value="item.city_code"
+                  :label="item.city_name"
                 >
+                  <span style="float: left">{{ item.city_name }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 12px">{{ item.city_code }}</span>
                 </el-option>
               </el-select>
             </el-form-item>
@@ -52,6 +54,8 @@
                   :label="item.city_name"
                   :value="item.city_code"
                 >
+                  <span style="float: left">{{ item.city_name }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 12px">{{ item.city_code }}</span>
                 </el-option>
               </el-select>
             </el-form-item>
