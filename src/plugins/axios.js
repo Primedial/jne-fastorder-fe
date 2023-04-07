@@ -1,6 +1,7 @@
 import { Message } from 'element-ui';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
+// import router from '@/router';
 
 export default {
   install(Vue) {

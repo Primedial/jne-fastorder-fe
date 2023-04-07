@@ -67,7 +67,7 @@
               prop="weight"
               :rules="{ required: true, trigger: 'blur', message: 'Berat wajib diisi' }"
             >
-              <el-input placeholder="Kg" v-model="model.weight"></el-input>
+              <el-input placeholder="Kg" v-model="model.weight" type="number"></el-input>
             </el-form-item>
           </el-col>
         </el-row>

@@ -9,7 +9,7 @@
       </el-steps>
     </el-card>
     <transition-group name="el-fade-in" mode="out-in">
-      <el-form v-show="currentStep === 0" key="el-form" ref="form" :model="model" label-position="top" class="mt-3">
+      <el-form v-show="currentStep === 0" key="el-form" ref="form" :model="model" label-position="top" class="mt-3" :rules="rules">
         <el-row :gutter="20" class="mb-2">
           <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
             <el-card>
@@ -20,7 +20,6 @@
                   v-if="!newSender"
                   prop="shipper_contact_id"
                   label="Nama pengirim"
-                  :rules="{ required: true, trigger: 'blur', message: 'Nama pengirim wajib diisi' }"
                 >
                   <el-select v-model="model.shipper_contact_id" value-key="id" placeholder="Pilih pengirim" class="w-full" @change="onHandleChange">
                     <el-option
@@ -38,7 +37,6 @@
                   <el-form-item
                     prop="shipper.name"
                     label="Nama Pengirim"
-                    :rules="{ required: true, trigger: 'blur', message: 'Nama pengirim wajib diisi' }"
                   >
                     <el-input
                       v-model="model.shipper.name"
@@ -49,9 +47,8 @@
                   <el-form-item
                     prop="shipper.phone_no"
                     label="Nomor Telepon/WA"
-                    :rules="{ required: true, trigger: 'blur', message: 'Nomor Telepon wajib diisi' }"
                   >
-                    <el-input v-model="model.shipper.phone_no" placeholder="08x" clearable></el-input>
+                    <el-input v-model.number="model.shipper.phone_no" placeholder="08x" clearable type="number"></el-input>
                   </el-form-item>
                   <el-form-item
                     prop="shipper.city_code"
@@ -81,9 +78,13 @@
                   <el-form-item
                     prop="shipper.postal_code"
                     label="Kode Pos"
-                    :rules="{ required: true, trigger: 'blur', message: 'Kode pos wajib diisi' }"
                   >
-                    <el-input v-model="model.shipper.postal_code" placeholder="Kode Pos" clearable></el-input>
+                    <el-input
+                      v-model.number="model.shipper.postal_code"
+                      placeholder="Kode Pos"
+                      clearable
+                      type="number"
+                    ></el-input>
                   </el-form-item>
                   <el-form-item
                     prop="shipper.address"
@@ -140,9 +141,8 @@
                   <el-form-item
                     prop="receiver.phone_no"
                     label="Nomor Telepon/WA"
-                    :rules="{ required: true, trigger: 'blur', message: 'Nama penerima wajib diisi' }"
                   >
-                    <el-input v-model="model.receiver.phone_no" placeholder="08x" clearable></el-input>
+                    <el-input v-model="model.receiver.phone_no" placeholder="08x" clearable type="number"></el-input>
                   </el-form-item>
                   <el-form-item
                     prop="receiver.city_code"
@@ -172,9 +172,8 @@
                   <el-form-item
                     prop="receiver.postal_code"
                     label="Kode Pos"
-                    :rules="{ required: true, trigger: 'blur', message: 'Kode pos wajib diisi' }"
                   >
-                    <el-input v-model="model.receiver.postal_code" placeholder="Kode Pos" clearable></el-input>
+                    <el-input v-model="model.receiver.postal_code" placeholder="Kode Pos" clearable type="number"></el-input>
                   </el-form-item>
                   <el-form-item
                     prop="receiver.address"
@@ -279,7 +278,10 @@
                 label="Jumlah barang"
                 :rules="{ required: true, trigger: 'blur', message: 'Jumlah barang wajib diisi' }"
               >
-                <el-input v-model="model.quantity" placeholder="1"></el-input>
+                <el-input-number
+                  v-model="model.quantity"
+                  :min="1"
+                ></el-input-number>
               </el-form-item>
             </el-col>
           </el-row>
@@ -306,7 +308,7 @@
                 label="Harga Barang"
                 :rules="{ required: true, trigger: 'blur', message: 'Harga barang wajib diisi' }"
               >
-                <el-input placeholder="Harga Barang" v-model="model.goods_price">
+                <el-input placeholder="Harga Barang" v-model="model.goods_price" type="number">
                   <template slot="prepend">Rp.</template>
                 </el-input>
                 <el-checkbox v-model="model.insured" class="mt-4">Asuransi</el-checkbox>
@@ -315,7 +317,7 @@
           </el-row>
           <el-divider></el-divider>
           <div class="flex justify-end">
-            <el-button type="primary" class="px-2" @click="submit">Selanjutnya</el-button>
+            <el-button type="primary" class="px-2" @click="submit" :loading="isLoading">Selanjutnya</el-button>
           </div>
         </el-card>
       </el-form>
@@ -463,7 +465,48 @@ import {
 
 export default {
   data() {
+    const phoneValidation = (_, value, cb) => {
+      if (String(value).length < 10 || String(value).length > 12) {
+        cb(new Error('Nomor Telepon tidak valid.'));
+      } else {
+        cb();
+      }
+    };
+    const postalCodeValidation = (_, value, cb) => {
+      const valid = /^[0-9]+$/.test(value);
+      if (!valid || String(value).length < 5 || String(value).length > 5) {
+        cb(new Error('Kode Pos tidak valid.'));
+      } else {
+        cb();
+      }
+    };
     return {
+      rules: {
+        shipper_contact_id: [{ required: true, trigger: 'blur', message: 'Nama pengirim wajib diisi' }],
+        receiver_contact_id: [{ required: true, trigger: 'blur', message: 'Nama penerima wajib diisi' }],
+        shipper: {
+          name: [{ required: true, trigger: 'blur', message: 'Nama pengirim wajib diisi' }],
+          phone_no: [
+            { required: true, trigger: 'blur', message: 'Nomor Telepon wajib diisi' },
+            { validator: phoneValidation, trigger: 'blur' },
+          ],
+          postal_code: [
+            { required: true, trigger: 'blur', message: 'Kode pos wajib diisi' },
+            { validator: postalCodeValidation, trigger: 'blur' },
+          ],
+        },
+        receiver: {
+          name: [{ required: true, trigger: 'blur', message: 'Nama pengirim wajib diisi' }],
+          phone_no: [
+            { required: true, trigger: 'blur', message: 'Nomor Telepon wajib diisi' },
+            { validator: phoneValidation, trigger: 'blur' },
+          ],
+          postal_code: [
+            { required: true, trigger: 'blur', message: 'Kode pos wajib diisi' },
+            { validator: postalCodeValidation, trigger: 'blur' },
+          ],
+        },
+      },
       isLoading: false,
       serviceType,
       currentStep: 0,
@@ -552,11 +595,6 @@ export default {
     };
   },
   computed: {
-    computedTarrifTrigger() {
-      return (this.model.shipper_contact_id || this.model.shipper.city_code)
-        && (this.model.receiver_contact_id || this.model.receiver.city_code)
-        && this.model.weight;
-    },
     filteredPrice() {
       return this.services.filter((service) => service.selected);
     },
@@ -576,13 +614,6 @@ export default {
     isInsufficientBalance() {
       return Number(this.selectedPriceAmount) * Number(this.model.quantity)
         > Number(this.user.wallet.amount);
-    },
-  },
-  watch: {
-    computedTarrifTrigger(newVal) {
-      if (newVal) {
-        this.getTarrifs();
-      }
     },
   },
   created() {
@@ -617,7 +648,7 @@ export default {
             };
             break;
           case 'receiver':
-            this.model.shipper = {
+            this.model.receiver = {
               name: '',
               phone_no: '',
               postal_code: '',
@@ -632,6 +663,7 @@ export default {
       }
     },
     async getTarrifs() {
+      this.isLoading = true;
       try {
         const data = {
           origin: this.selectedShipper?.city_code || this.model.shipper.city_code,
@@ -644,9 +676,11 @@ export default {
           selected: false,
         }));
         this.isSearched = true;
+        this.currentStep += 1;
       } catch (e) {
         // do nothing
       }
+      this.isLoading = false;
     },
     onHandleChange(event, type) {
       if (type) {
@@ -676,9 +710,9 @@ export default {
     async submit() {
       switch (this.currentStep) {
         case 0:
-          this.$refs.form.validate((valid) => {
+          this.$refs.form.validate(async (valid) => {
             if (valid) {
-              this.currentStep += 1;
+              await this.getTarrifs();
             }
           });
           break;
