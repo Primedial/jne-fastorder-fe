@@ -64,7 +64,6 @@ export default {
         const res = await awb.getDeliveryHistory(params);
         this.total = res.data.total;
         this.tableData = res.data.data;
-        console.log(this.tableData);
       } catch (e) {
         console.log(e);
       }

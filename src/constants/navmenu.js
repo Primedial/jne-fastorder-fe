@@ -23,6 +23,10 @@ export default [
         title: 'Resi Satuan',
       },
       {
+        path: 'resi-massal',
+        title: 'Resi Massal',
+      },
+      {
         path: 'riwayat-pengiriman',
         title: 'Riwayat Pengiriman',
       },
