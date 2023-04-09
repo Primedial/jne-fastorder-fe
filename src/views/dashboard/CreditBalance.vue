@@ -59,7 +59,6 @@
       <el-table :data="tableData" style="width:100%">
         <el-table-column
           label="Tipe"
-          sortable
           width="180">
           <template slot-scope="scope">
             <el-tag :type="tagType(scope.row)" class="w-full text-center">
@@ -69,13 +68,11 @@
         </el-table-column>
         <el-table-column
           prop="reference_no"
-          label="Deskripsi"
-          sortable
+          label="No Referensi"
           width="180">
         </el-table-column>
         <el-table-column
           label="Saldo Awal"
-          sortable
         >
           <template slot-scope="scope">
             <p class="text-right my-0">
@@ -85,7 +82,6 @@
         </el-table-column>
         <el-table-column
           label="Saldo Kiriman"
-          sortable
         >
           <template slot-scope="scope">
             <p class="text-right my-0" :class="`text-${tagType(scope.row)}`">
@@ -108,6 +104,7 @@
           :total="total"
           :page-size="10"
           :current-page.sync="currentPage"
+          @current-change="handlePageChange"
         >
         </el-pagination>
         <small>Total: <strong>{{ total }}</strong></small>
@@ -173,6 +170,10 @@ export default {
         //
       }
     },
+    handlePageChange(page) {
+      this.currentPage = page;
+      this.fetchHistoricalData();
+    },
     submit() {
       this.$refs.topup.validate(async (valid) => {
         if (valid) {
@@ -189,7 +190,12 @@ export default {
               message: 'Topup saldo berhasil',
             });
           } catch (e) {
-            //
+            if (e?.response?.data?.error?.amount) {
+              this.$notify({
+                type: 'error',
+                message: e?.response?.data?.error?.amount.join(','),
+              });
+            }
           }
           this.loading = false;
         }

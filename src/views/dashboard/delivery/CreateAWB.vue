@@ -267,9 +267,8 @@
               <el-form-item
                 prop="weight"
                 label="Berat Kiriman (Kg)"
-                :rules="{ required: true, trigger: 'blur', message: 'Berat barang wajib diisi' }"
               >
-                <el-input v-model="model.weight" placeholder="Kg"></el-input>
+                <el-input v-model.number="model.weight" placeholder="Kg"></el-input>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8">
@@ -355,7 +354,10 @@
         <el-row :gutter="20">
           <el-col :span="16">
             <el-card>
-              <h2 class="text-primary mt-0">Summary</h2>
+              <div class="flex items-center justify-between">
+                <h2 class="text-primary mt-0">Summary</h2>
+                <el-button icon="el-icon-edit" size="small" type="primary" @click="currentStep -= 1">Edit</el-button>
+              </div>
               <el-row :gutter="16" class="mb-2">
                 <el-col :span="6">
                   <div class="mr-3">
@@ -444,7 +446,21 @@
           <template slot="extra">
             <p class="mb-2">Berikut nomor resi anda:</p>
             <el-tag type="info">
-              <h4 class="my-0">{{ generatedAwb }}</h4>
+              <h4 class="my-0">#{{ generatedAwb }}</h4>
+              <div class="flex flex-col mt-2">
+                <el-button
+                  class="mb-1"
+                  type="primary"
+                  icon="el-icon-plus"
+                  @click="createNew"
+                >Buat Resi</el-button>
+                <el-button
+                  type="primary"
+                  @click="$router.push({ name: 'dashboard-delivery' })"
+                >
+                  Cek Riwayat Pengiriman
+                </el-button>
+              </div>
             </el-tag>
           </template>
         </el-result>
@@ -475,7 +491,7 @@ export default {
     const postalCodeValidation = (_, value, cb) => {
       const valid = /^[0-9]+$/.test(value);
       if (!valid || String(value).length < 5 || String(value).length > 5) {
-        cb(new Error('Kode Pos tidak valid.'));
+        cb(new Error('Kode Pos lebih atau kurang dari 5 karakter.'));
       } else {
         cb();
       }
@@ -506,6 +522,20 @@ export default {
             { validator: postalCodeValidation, trigger: 'blur' },
           ],
         },
+        weight: [
+          { required: true, trigger: 'blur', message: 'Berat barang wajib diisi' },
+          {
+            validator: (_, value, cb) => {
+              const val = Number(value);
+              if (val && val < 0) {
+                cb(new Error('Berat harus lebih besar daripada 0 (nol)'));
+              } else {
+                cb();
+              }
+            },
+            trigger: 'blur',
+          },
+        ],
       },
       isLoading: false,
       serviceType,
@@ -619,6 +649,16 @@ export default {
   created() {
     this.init();
   },
+  watch: {
+    currentStep(newVal, oldVal) {
+      if (newVal < oldVal) {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth',
+        });
+      }
+    },
+  },
   methods: {
     async init() {
       try {
@@ -633,6 +673,41 @@ export default {
       } catch (e) {
         // do nothing
       }
+    },
+    createNew() {
+      this.model = {
+        shipper: {
+          name: '',
+          phone_no: '',
+          city_code: null,
+          city_name: '',
+          postal_code: '',
+          address: '',
+        },
+        receiver: {
+          name: '',
+          phone_no: '',
+          city_code: null,
+          city_name: '',
+          postal_code: '',
+          address: '',
+        },
+        shipper_contact_id: null,
+        receiver_contact_id: null,
+        shipment_code: null,
+        vehicle: null,
+        cod: null,
+        pickup_type: null,
+        agent: null,
+        weight: null,
+        quantity: 1,
+        goods_descriptions: '',
+        handling_instructions: '',
+        insured: false,
+        goods_price: null,
+        shipment_amount: 0,
+      };
+      this.currentStep = 0;
     },
     onToggleNewContact(evt, type) {
       if (!evt) {
@@ -713,11 +788,19 @@ export default {
           this.$refs.form.validate(async (valid) => {
             if (valid) {
               await this.getTarrifs();
+              window.scrollTo({
+                top: 0,
+                behavior: 'smooth',
+              });
             }
           });
           break;
         case 1:
           await this.generateAirwayBill();
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+          });
           break;
         default:
           break;

@@ -31,6 +31,7 @@
           :total="total"
           :page-size="10"
           :current-page.sync="currentPage"
+          @current-change="handlePageChange"
         >
         </el-pagination>
         <small>Total: <strong>{{ total }}</strong></small>
@@ -53,6 +54,14 @@ export default {
   },
   created() {
     this.fetchData();
+    if (this.$route.query.page) {
+      this.currentPage = Number(this.$route.query.page);
+    }
+  },
+  watch: {
+    $route() {
+      this.fetchData();
+    },
   },
   methods: {
     async fetchData() {
@@ -70,6 +79,10 @@ export default {
     },
     viewDeliveryStatus(row) {
       console.log({ row });
+    },
+    handlePageChange(page) {
+      this.$router.push({ name: 'dashboard-delivery', query: { page } });
+      this.currentPage = page;
     },
   },
 };
