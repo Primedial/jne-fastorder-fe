@@ -1,7 +1,7 @@
 import { Message } from 'element-ui';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
-// import router from '@/router';
+import router from '@/router';
 
 export default {
   install(Vue) {
@@ -23,6 +23,9 @@ export default {
           type: 'error',
           message: error?.response?.data?.message,
         });
+      }
+      if (error?.response?.status === 401) {
+        router.push('/login');
       }
       return Promise.reject(error);
     });

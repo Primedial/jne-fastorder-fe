@@ -3,22 +3,43 @@
     <h1>Riwayat Pengiriman</h1>
     <el-card>
       <el-table :data="tableData">
-        <el-table-column type="index" width="50" fixed="left"></el-table-column>
         <el-table-column prop="cnote_no" label="Nomor Resi" width="180" fixed="left">
           <template slot-scope="scope">
             <el-tag type="info">#{{ scope.row.cnote_no }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="service_name" label="Jenis Layanan" width="120"></el-table-column>
-        <el-table-column label="Harga" width="250">
+        <el-table-column prop="service_name" label="Jenis Layanan" width="120">
           <template slot-scope="scope">
-            {{ scope.row.price | formatCurrency }}
+            <el-tag type="info"><strong>{{ scope.row.service_name }}</strong></el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="shipper.name" label="Pengirim" width="250"></el-table-column>
-        <el-table-column prop="shipper.city_name" label="Kota Pengirim" width="250"></el-table-column>
-        <el-table-column prop="receiver.name" label="Penerima" width="250"></el-table-column>
-        <el-table-column prop="receiver.city_name" label="Kota Penerima" width="250"></el-table-column>
+        <el-table-column label="Harga" width="180">
+          <template slot-scope="scope">
+            <p class="text-right">
+              {{ scope.row.price | formatCurrency }}
+            </p>
+          </template>
+        </el-table-column>
+        <el-table-column label="Pengirim" width="250">
+          <template slot-scope="scope">
+            {{ scope.row.shipper?.name || scope.row.static_shipper_name }}
+          </template>
+        </el-table-column>
+        <el-table-column label="Kota Pengirim" width="250">
+          <template slot-scope="scope">
+            {{ scope.row.shipper?.city_name || scope.row.static_shipper_city_name }}
+          </template>
+        </el-table-column>
+        <el-table-column label="Penerima" width="250">
+          <template slot-scope="scope">
+            {{ scope.row.receiver?.name || scope.row.static_receiver_name }}
+          </template>
+        </el-table-column>
+        <el-table-column label="Kota Penerima" width="250">
+          <template slot-scope="scope">
+            {{ scope.row.receiver?.name || scope.row.static_receiver_city_name }}
+          </template>
+        </el-table-column>
         <el-table-column label="Status" width="150">
           <template slot-scope="scope">
             <el-button type="text" icon="el-icon-search" @click="viewDeliveryStatus(scope.row)">Lihat</el-button>
@@ -50,6 +71,7 @@ export default {
       currentPage: 1,
       total: 0,
       search: '',
+      dialogVisible: false,
     };
   },
   created() {
@@ -80,8 +102,12 @@ export default {
     viewDeliveryStatus(row) {
       console.log({ row });
     },
-    handlePageChange(page) {
-      this.$router.push({ name: 'dashboard-delivery', query: { page } });
+    async handlePageChange(page) {
+      await this.$router.push({ name: 'dashboard-delivery', query: { page } });
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
       this.currentPage = page;
     },
   },

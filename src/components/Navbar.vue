@@ -1,6 +1,6 @@
 <template>
   <nav class="nav-wrapper">
-    <div>
+    <div class="flex items-center justify-between w-full">
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item
           v-for="path in paths"
@@ -10,11 +10,23 @@
           {{ path.title }}
         </el-breadcrumb-item>
       </el-breadcrumb>
+      <el-dropdown>
+        <span class="el-dropdown-link">
+          <strong>{{ user.name }}</strong><i class="el-icon-arrow-down el-icon--right"></i>
+        </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item>
+            <button type="button" class="btn-reset" @click="logout">Logout</button>
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
     </div>
   </nav>
 </template>
 
 <script>
+import auth from '@/api/auth';
+
 export default {
   data() {
     return {
@@ -32,6 +44,16 @@ export default {
           path: to,
         };
       });
+    },
+    user() {
+      return this.$store.getters['auth/user'];
+    },
+  },
+  methods: {
+    async logout() {
+      await auth.logout();
+      localStorage.removeItem('token');
+      await this.$store.dispatch('auth/introspect');
     },
   },
 };

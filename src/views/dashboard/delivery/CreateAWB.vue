@@ -343,7 +343,10 @@
                   </el-col>
                   <el-col :span="17">
                     <el-tag type="info" outlined class="service-tag"><strong>{{ price.service_display }}</strong></el-tag>
-                    <h2 class="my-1">{{ price.price | formatCurrency }}</h2>
+                    <h2 class="my-1">{{ price.discount_price | formatCurrency }}</h2>
+                    <small class="text-gray mb-1 block">
+                      <strike>{{ price.price | formatCurrency }}</strike>
+                    </small>
                     <small class="text-gray">Tipe barang: <strong>{{ price.goods_type }}</strong></small>
                   </el-col>
                 </el-row>
@@ -382,7 +385,6 @@
               </el-row>
               <h4 class="mb-1 mt-2">Detail</h4>
                 <el-table :data="filteredPrice">
-                  <el-table-column label="No." width="50"></el-table-column>
                   <el-table-column label="Deskripsi">
                     <template slot-scope="scope">
                       <p class="my-0"><strong>{{ scope.row.service_display }}</strong></p>
@@ -397,14 +399,14 @@
                   <el-table-column label="Harga (/qty)">
                     <template slot-scope="scope">
                       <p class="text-right">
-                        <strong>{{ scope.row.price | formatCurrency }}</strong>
+                        <strong>{{ scope.row.discount_price | formatCurrency }}</strong>
                       </p>
                     </template>
                   </el-table-column>
                   <el-table-column label="Subtotal Harga">
                     <template slot-scope="scope">
                       <p class="text-right">
-                        <strong>{{ (Number(scope.row.price) * Number(model.quantity)) | formatCurrency }}</strong>
+                        <strong>{{ (Number(scope.row.discount_price) * Number(model.quantity)) | formatCurrency }}</strong>
                       </p>
                     </template>
                   </el-table-column>
@@ -631,7 +633,7 @@ export default {
     selectedPriceAmount() {
       const filtered = this.services.filter((service) => service.selected);
       if (filtered.length > 0) {
-        return filtered[0].price;
+        return filtered[0].discount_price;
       }
       return 0;
     },

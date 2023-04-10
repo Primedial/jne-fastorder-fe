@@ -100,7 +100,10 @@
               </el-col>
               <el-col :span="17">
                 <el-tag type="info" outlined class="service-tag"><strong>{{ price.service_display }}</strong></el-tag>
-                <h2 class="my-1">{{ price.price | formatCurrency }}</h2>
+                <h2 class="my-1">{{ price.discount_price | formatCurrency }}</h2>
+                <small class="text-gray mb-1 block">
+                  <strike>{{ price.price | formatCurrency }}</strike>
+                </small>
                 <small class="text-gray">Tipe barang: <strong>{{ price.goods_type }}</strong></small>
               </el-col>
             </el-row>

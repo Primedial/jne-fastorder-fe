@@ -42,6 +42,16 @@ async function generateAWB(data) {
   return res.data;
 }
 
+async function bulkGenerateAWB(data) {
+  const res = await Vue.axios({
+    url: `${AWB_BASE_URL}/bulk`,
+    method: 'POST',
+    data,
+  });
+
+  return res.data;
+}
+
 async function getDeliveryHistory(params) {
   const res = await Vue.axios({
     url: AWB_BASE_URL,
@@ -58,4 +68,5 @@ export default {
   checkTarrif,
   generateAWB,
   getDeliveryHistory,
+  bulkGenerateAWB,
 };
