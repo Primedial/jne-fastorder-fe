@@ -57,7 +57,7 @@ export default {
             await this.$store.dispatch('auth/introspect');
             await this.$router.push({ name: 'dashboard-overview' });
           } catch (e) {
-            console.log(e);
+            // do nothing
           }
         }
       });

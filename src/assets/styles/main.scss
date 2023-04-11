@@ -33,3 +33,45 @@ body {
 .bg-gray {
   background-color: #d3dce6;
 }
+
+.btn-reset {
+  background: none;
+  border: none;
+
+  &:focus, &:active {
+    outline: none;
+  }
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+button.reset {
+  width: 100%;
+  height: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  text-align: unset;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input[type="number"]:hover,
+input[type="number"]:focus {
+  -moz-appearance: number-input;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+  /* Firefox */
+}

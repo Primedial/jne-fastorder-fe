@@ -5,7 +5,7 @@
       <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8" class="mb-2">
         <el-card class="bg-primary">
           <p class="text-light mt-0">Total Saldo</p>
-          <h2 class="text-light black text-right">Rp.100,000,000</h2>
+          <h2 class="text-light black text-right">{{ user.wallet.amount | formatCurrency }}</h2>
         </el-card>
       </el-col>
       <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8" class="mb-2">
@@ -37,7 +37,7 @@
       <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8" class="mb-2">
         <el-card>
           <p class="text-gray mt-0">Total Pengiriman</p>
-          <h2 class="black text-right">25</h2>
+          <h2 class="black text-right">{{ overviews.totalDelivery }}</h2>
         </el-card>
       </el-col>
     </el-row>
@@ -69,6 +69,7 @@
 </template>
 
 <script>
+import awb from '@/api/awb';
 import ApexCharts from 'vue-apexcharts';
 
 export default {
@@ -119,7 +120,28 @@ export default {
           },
         },
       },
+      overviews: {
+        totalDelivery: 0,
+      },
     };
+  },
+  computed: {
+    user() {
+      return this.$store.getters['auth/user'];
+    },
+  },
+  mounted() {
+    this.fetchDeliveries();
+  },
+  methods: {
+    async fetchDeliveries() {
+      try {
+        const res = await awb.getDeliveryHistory();
+        this.overviews.totalDelivery = res.data.total;
+      } catch (e) {
+        console.log(e);
+      }
+    },
   },
 };
 </script>

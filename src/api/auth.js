@@ -19,7 +19,17 @@ async function introspect() {
   return res.data;
 }
 
+async function logout() {
+  const res = await Vue.axios({
+    url: '/v1/logout',
+    method: 'POST',
+  });
+
+  return res.data;
+}
+
 export default {
   login,
   introspect,
+  logout,
 };

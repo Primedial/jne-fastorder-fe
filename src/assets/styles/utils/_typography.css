@@ -19,3 +19,9 @@
 .text-primary {
   color: #FE634E;
 }
+.text-success {
+  color: #089720;
+}
+.text-danger {
+  color: #ff4800;
+}

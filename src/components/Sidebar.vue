@@ -25,7 +25,7 @@
       <small class="text-center text-gray mb-1 mt-2 block">Welcome back,</small>
       <h4 class="text-center mt-0 mb-4">{{ user.name }}</h4>
       <div class="my-2">
-        <h2 class="text-center mb-0">Rp.100,000,000</h2>
+        <h2 class="text-center mb-0">{{ user.wallet.amount | formatCurrency }}</h2>
         <small class="text-center text-gray block mt-1">Total Saldo</small>
       </div>
       <div
@@ -58,12 +58,12 @@
 </template>
 
 <script>
-import menus from '@/constants/navmenu';
+import { navMenu } from '@/constants/navmenu';
 
 export default {
   data() {
     return {
-      menus,
+      menus: navMenu,
       isCollapse: false,
     };
   },
