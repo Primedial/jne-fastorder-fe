@@ -9,12 +9,15 @@ const defaultState = () => ({
     date_of_birth: '',
     phone_no: '',
     address: '',
+    wallet: {
+      amount: 0,
+    },
   },
 });
 
 const mutations = {
-  SET_LOGGED_IN: (state) => {
-    state.isLoggedIn = true;
+  SET_LOGGED_IN: (state, val) => {
+    state.isLoggedIn = val;
   },
   SET_USER_DETAIL: (state, payload) => {
     state.user = { ...payload };
@@ -28,14 +31,16 @@ const mutations = {
 };
 const actions = {
   async introspect({ commit }) {
-    try {
-      const res = await auth.introspect();
-      commit('SET_LOGGED_IN');
-      commit('SET_USER_DETAIL', res.data);
-    } catch (e) {
-      // do nothing
+    if (localStorage.getItem('token')) {
+      try {
+        const res = await auth.introspect();
+        commit('SET_LOGGED_IN', true);
+        commit('SET_USER_DETAIL', res.data);
+      } catch (e) {
+        // do nothing
+      }
     }
-    commit('SET_LOADED');
+    commit('app/SET_LOADED');
   },
 };
 

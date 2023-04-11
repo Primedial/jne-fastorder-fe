@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import auth from '@/api/auth';
+import auth from '@/api/admin/auth';
 
 export default {
   data() {
@@ -53,8 +53,7 @@ export default {
               password: this.model.password,
             };
             const res = await auth.login(data);
-            localStorage.setItem('admin_token', res.data.token);
-            // await this.$store.dispatch('auth/introspect');
+            localStorage.setItem('admintoken', res.data.token);
             await this.$router.push({ name: 'admin-overview' });
           } catch (e) {
             // do nothing

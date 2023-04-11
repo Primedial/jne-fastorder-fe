@@ -53,7 +53,8 @@ export default {
     async logout() {
       await auth.logout();
       localStorage.removeItem('admintoken');
-      await this.$store.dispatch('adminAuth/introspect');
+      this.$store.commit('adminAuth/SET_LOGGED_IN', false);
+      this.$router.push({ name: 'admin-login' });
     },
   },
 };

@@ -20,5 +20,10 @@ export default {
     Sidebar,
     Navbar,
   },
+  computed: {
+    isLoggedIn() {
+      return this.$store.getters['authAdmin/isLoggedIn'];
+    },
+  },
 };
 </script>

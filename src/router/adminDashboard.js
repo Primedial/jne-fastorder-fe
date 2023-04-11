@@ -1,17 +1,8 @@
 import Overview from '@/views/admin/Overview.vue';
-import Login from '@/views/admin/Login.vue';
 import UserType from '@/views/admin/master-data/UserType.vue';
 import User from '@/views/admin/master-data/User.vue';
 
 export default [
-  {
-    name: 'admin-login',
-    path: 'login',
-    component: Login,
-    meta: {
-      title: 'MySales - Login',
-    },
-  },
   {
     name: 'admin-overview',
     path: 'overview',

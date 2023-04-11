@@ -51,9 +51,14 @@ export default {
   },
   methods: {
     async logout() {
-      await auth.logout();
-      localStorage.removeItem('token');
-      await this.$store.dispatch('auth/introspect');
+      try {
+        await auth.logout();
+        localStorage.removeItem('token');
+        this.$store.commit('auth/SET_LOGGED_IN', false);
+        this.$router.push('/login');
+      } catch (e) {
+        console.log(e)
+      }
     },
   },
 };

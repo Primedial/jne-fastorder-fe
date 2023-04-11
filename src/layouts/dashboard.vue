@@ -2,7 +2,7 @@
   <main class="flex">
     <Sidebar />
     <div class="app-wrapper">
-      <Navbar/>
+      <Navbar />
       <transition name="el-fade-in" mode="out-in">
         <router-view></router-view>
       </transition>

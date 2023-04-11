@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import DashboardLayout from '@/layouts/dashboard.vue';
 import AdminDashboardLayout from '@/layouts/admin_dashboard.vue';
 import Login from '@/views/Login.vue';
+import AdminLogin from '@/views/admin/Login.vue';
 import NotFound from '@/views/NotFound.vue';
 import store from '@/store';
 import dashboardRoutes from './dashboard';
@@ -20,6 +21,17 @@ const routes = [
     path: '/login',
     name: 'login',
     component: Login,
+    meta: {
+      title: 'Login',
+    },
+  },
+  {
+    name: 'admin-login',
+    path: '/mysales/login',
+    component: AdminLogin,
+    meta: {
+      title: 'MySales - Login',
+    },
   },
   {
     path: '/dashboard',
@@ -50,7 +62,6 @@ const publicRoutes = ['/login', '/register', '/mysales/login'];
 const routeIdentifier = (to) => to.name.split('-')[0];
 
 const verifyRoutePath = (to, next) => {
-  // console.log(to.matched);
   const destinationPath = to.matched[0].path === '/mysales' ? to.matched[1].path : to.matched[0].path;
   const isAdmin = routeIdentifier(to) === 'admin';
   if (publicRoutes.includes(destinationPath)) {
@@ -62,31 +73,33 @@ const verifyRoutePath = (to, next) => {
     if (store.getters['auth/isLoggedIn']) {
       return next({ path: '/dashboard/overview' });
     }
-    // return next();
   }
   if (isAdmin) {
     if (store.getters['adminAuth/isLoggedIn']) {
       return next();
     }
+    return next();
   }
   if (store.getters['auth/isLoggedIn']) {
     return next();
   }
-  if (isAdmin) {
-    return next({ path: '/mysales/login' });
-  }
-  return next({ path: '/login' });
+  return next();
 };
+
 router.beforeEach(async (to, from, next) => {
-  if (!store.getters['auth/isLoaded']) {
+  if (!store.getters['app/isLoaded']) {
     try {
       if (routeIdentifier(to) === 'admin') {
-        await store.dispatch('adminAuth/introspect');
+        if (localStorage.getItem('admintoken')) {
+          await store.dispatch('adminAuth/introspect');
+        }
       } else {
-        await store.dispatch('auth/introspect');
+        if (localStorage.getItem('token')) {
+          await store.dispatch('auth/introspect');
+        }
       }
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
     }
   }
   document.title = to.meta.title;
