@@ -1,4 +1,4 @@
-export default [
+export const navMenu = [
   {
     path: 'overview',
     title: 'Dashboard',
@@ -36,5 +36,23 @@ export default [
     path: 'wallet',
     title: 'Saldo',
     icon: 'credit-card-outline',
+  },
+];
+
+export const adminNavMenu = [
+  {
+    path: 'overview',
+    title: 'Dashboard',
+    icon: 'activity-outline',
+  },
+  {
+    path: 'user-type',
+    title: 'Tipe User',
+    icon: 'bookmark-outline',
+  },
+  {
+    path: 'user',
+    title: 'User',
+    icon: 'person-add-outline',
   },
 ];

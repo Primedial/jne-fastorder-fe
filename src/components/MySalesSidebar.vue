@@ -4,6 +4,7 @@
       :default-active="$route.path"
       @open="handleOpen"
       @close="handleClose"
+      @select="onSelect"
       router
     >
       <div class="mt-2 p-2">
@@ -14,25 +15,12 @@
           class="block m-auto"
         ></el-image>
       </div>
-      <div class="w-full flex justify-center mt-3">
-        <el-avatar
-          shape="circle"
-          :size="100"
-          fit="cover"
-          src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
-        ></el-avatar>
-      </div>
-      <small class="text-center text-gray mb-1 mt-2 block">Welcome back,</small>
-      <h4 class="text-center mt-0 mb-4">{{ user.name }}</h4>
-      <div class="my-2">
-        <h2 class="text-center mb-0">{{ user.wallet.amount | formatCurrency }}</h2>
-        <small class="text-center text-gray block mt-1">Total Saldo</small>
-      </div>
+      <h2 class="text-center text-gray">MySales</h2>
       <div
         v-for="(menu, i) in menus"
         :key="`menu-${i}`"
       >
-        <el-submenu v-if="menu.children" :index="`/dashboard/${menu.path}`">
+        <el-submenu :class="`menu-${i}`" v-if="menu.children" :index="`/mysales/${menu.path}`">
           <template slot="title">
             <eva-icon :name="menu.icon" class="mr-1 mb-1"></eva-icon>
             <span slot="title">{{ menu.title }}</span>
@@ -41,15 +29,15 @@
             <el-menu-item
               v-for="(sub, c) in menu.children"
               :key="`sub-${i}-${c}`"
-              :index="`/dashboard/${menu.path}/${sub.path}`"
+              :index="`/mysales/${menu.path}/${sub.path}`"
             >
               <eva-icon v-if="sub.icon" :name="sub.icon" class="mr-1 mb-1"></eva-icon>
               <span slot="title">{{ sub.title }}</span>
             </el-menu-item>
           </el-menu-item-group>
         </el-submenu>
-        <el-menu-item v-else :index="`/dashboard/${menu.path}`">
-          <eva-icon :name="menu.icon" class="mr-1 mb-1"></eva-icon>
+        <el-menu-item v-else :class="`menu-${i}`" :index="`/mysales/${menu.path}`">
+          <eva-icon :name="menu.icon" class="mr-1 mb-1" :fill="menu.isActive ? '#FE634E' : '#888'"></eva-icon>
           <span slot="title">{{ menu.title }}</span>
         </el-menu-item>
       </div>
@@ -58,12 +46,15 @@
 </template>
 
 <script>
-import { navMenu } from '@/constants/navmenu';
+import { adminNavMenu } from '@/constants/navmenu';
 
 export default {
   data() {
     return {
-      menus: navMenu,
+      menus: adminNavMenu.map((menu) => ({
+        ...menu,
+        isActive: `/mysales/${menu.path}` === this.$route.path,
+      })),
       isCollapse: false,
     };
   },
@@ -78,6 +69,12 @@ export default {
     },
     handleClose() {
       this.isCollapse = true;
+    },
+    onSelect(idx, idxPath) {
+      this.menus = adminNavMenu.map((menu) => ({
+        ...menu,
+        isActive: idxPath === this.$route.path,
+      }));
     },
   },
 };

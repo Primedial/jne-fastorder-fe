@@ -18,5 +18,7 @@ module.exports = {
     'no-param-reassign': 'off',
     'no-restricted-syntax': 'warn',
     'max-len': 'off',
+    'import/no-duplicates': 'off',
+    'semi': 'warn',
   },
 };

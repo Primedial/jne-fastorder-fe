@@ -10,7 +10,7 @@
             type="primary"
             icon="el-icon-check"
             :loading="loading"
-            :disabled="fileContents.length === 0"
+            :disabled="isSubmitDisabled"
             @click="submit"
           >Kirim Data</el-button>
         </div>
@@ -145,6 +145,12 @@ export default {
     subtotal() {
       return this.fileContents.reduce((acc, curr) => acc + curr.discount_price * curr.quantity, 0);
     },
+    user() {
+      return this.$store.getters['auth/user'];
+    },
+    isSubmitDisabled() {
+      return this.fileContents.length === 0 || this.user.wallet.amount < this.subtotal;
+    },
   },
   methods: {
     fileHandler(event) {
@@ -240,6 +246,7 @@ export default {
               })),
             };
             await awb.bulkGenerateAWB(payload);
+            this.$store.dispatch('auth/introspect');
             this.$notify({
               type: 'success',
               message: 'Berhasil',
