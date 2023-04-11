@@ -11,8 +11,8 @@ export default {
       baseURL: `${process.env.VUE_APP_API_URL}/api`,
     });
     instance.interceptors.request.use((config) => {
+      const token = localStorage.getItem('token');
       if (!publicUrls.includes(config.url)) {
-        const token = localStorage.getItem('token');
         config.headers.Authorization = `Bearer ${token}`;
       }
       return config;
@@ -26,6 +26,7 @@ export default {
         });
       }
       if (error?.response?.status === 401) {
+        localStorage.removeItem('token');
         router.push('/login');
       }
       return Promise.reject(error);
@@ -50,9 +51,10 @@ export default {
           message: error?.response?.data?.message,
         });
       }
-      // if (error?.response?.status === 401) {
-      //   router.push('/mysales/login');
-      // }
+      if (error?.response?.status === 401) {
+        localStorage.removeItem('admintoken');
+        router.push('/mysales/login');
+      }
       return Promise.reject(error);
     });
 

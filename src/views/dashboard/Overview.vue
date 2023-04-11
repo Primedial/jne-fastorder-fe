@@ -139,7 +139,7 @@ export default {
         const res = await awb.getDeliveryHistory();
         this.overviews.totalDelivery = res.data.total;
       } catch (e) {
-        console.log(e);
+        // console.log(e);
       }
     },
   },

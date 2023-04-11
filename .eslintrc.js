@@ -20,5 +20,6 @@ module.exports = {
     'max-len': 'off',
     'import/no-duplicates': 'off',
     'semi': 'warn',
+    'no-lonely-if': 'off',
   },
 };
