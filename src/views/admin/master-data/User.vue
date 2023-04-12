@@ -2,7 +2,7 @@
   <div>
     <div class="my-1 flex items-center justify-between">
       <h1>User</h1>
-      <el-button type="primary" icon="el-icon-plus">Tambah</el-button>
+      <el-button type="primary" icon="el-icon-plus" @click="newUser">Tambah</el-button>
     </div>
     <el-card>
       <el-table :data="tableData">
@@ -43,7 +43,7 @@
           </el-select>
         </el-form-item>
       </el-form>
-      <el-button type="primary" class="w-full" :loading="loading">Submit</el-button>
+      <el-button type="primary" class="w-full" :loading="loading" @click="submit">Submit</el-button>
     </el-dialog>
   </div>
 </template>
@@ -93,6 +93,29 @@ export default {
       this.model = { ...row };
       this.model.user_type_id = row.user_type.id;
       this.dialogVisible = true;
+    },
+    submit() {
+      this.$refs.form.validate(async (valid) => {
+        if (valid) {
+          this.loading = true;
+          const payload = {
+            ...this.model,
+            user_type_id: this.model.user_type_id,
+            gender: 1,
+          };
+          await user.register(payload);
+          this.dialogVisible = false;
+          this.fetchData();
+          this.loading = false;
+        }
+      });
+    },
+    newUser() {
+      this.dialogVisible = true;
+      this.model = {
+        name: '',
+        user_type_id: null,
+      };
     },
   },
 };

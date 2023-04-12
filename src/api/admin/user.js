@@ -10,4 +10,13 @@ export default {
 
     return res.data;
   },
+  async register(data) {
+    const res = await Vue.http({
+      url: '/v1/register',
+      method: 'POST',
+      data,
+    });
+
+    return res.data;
+  },
 };
