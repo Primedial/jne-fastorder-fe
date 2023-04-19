@@ -48,7 +48,9 @@
                     prop="shipper.phone_no"
                     label="Nomor Telepon/WA"
                   >
-                    <el-input v-model.number="model.shipper.phone_no" placeholder="08x" clearable type="number"></el-input>
+                    <fo-input-number v-model="model.shipper.phone_no" :formatted="false" clearable>
+                      <template slot="prepend">+62</template>
+                    </fo-input-number>
                   </el-form-item>
                   <el-form-item
                     prop="shipper.city_code"
@@ -142,7 +144,9 @@
                     prop="receiver.phone_no"
                     label="Nomor Telepon/WA"
                   >
-                    <el-input v-model="model.receiver.phone_no" placeholder="08x" clearable type="number"></el-input>
+                    <fo-input-number v-model="model.receiver.phone_no" :formatted="false" clearable>
+                      <template slot="prepend">+62</template>
+                    </fo-input-number>
                   </el-form-item>
                   <el-form-item
                     prop="receiver.city_code"
@@ -268,7 +272,7 @@
                 prop="weight"
                 label="Berat Kiriman (Kg)"
               >
-                <el-input v-model.number="model.weight" placeholder="Kg"></el-input>
+                <fo-input-number v-model="model.weight" placeholder="Berat Kiriman"></fo-input-number>
               </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8">
@@ -307,9 +311,9 @@
                 label="Harga Barang"
                 :rules="{ required: true, trigger: 'blur', message: 'Harga barang wajib diisi' }"
               >
-                <el-input placeholder="Harga Barang" v-model="model.goods_price" type="number">
+                <fo-input-number v-model="model.goods_price" placeholder="Harga barang">
                   <template slot="prepend">Rp.</template>
-                </el-input>
+                </fo-input-number>
                 <el-checkbox v-model="model.insured" class="mt-4">Asuransi</el-checkbox>
               </el-form-item>
             </el-col>

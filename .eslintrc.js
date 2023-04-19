@@ -19,7 +19,9 @@ module.exports = {
     'no-restricted-syntax': 'warn',
     'max-len': 'off',
     'import/no-duplicates': 'off',
-    'semi': 'warn',
+    semi: 'warn',
     'no-lonely-if': 'off',
+    'vue/no-custom-modifiers-on-v-model': 'off',
+    'no-unused-vars': 'warn',
   },
 };

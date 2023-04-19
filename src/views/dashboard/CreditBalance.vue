@@ -113,7 +113,7 @@
     <el-dialog :visible.sync="dialogTopupVisible" title="Topup Saldo" width="30%">
       <el-form ref="topup" :model="model">
         <el-form-item prop="amount" label="Nominal">
-          <el-input v-model="model.amount" clearble></el-input>
+          <fo-input-number v-model="model.amount"></fo-input-number>
         </el-form-item>
       </el-form>
       <el-button type="primary" class="py-2 w-full" :loading="loading" @click="submit">Submit</el-button>

@@ -2,7 +2,7 @@
   <div>
     <h1>Cek Ongkir</h1>
     <el-card>
-      <el-form ref="form" :model="model" @keyup.native.enter="submit">
+      <el-form ref="form" :model="model" :rules="rules" @keyup.native.enter="submit">
         <el-row :gutter="20">
           <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8">
             <h3>Asal</h3>
@@ -65,9 +65,8 @@
             <p class="text-gray">dalam satuan Kg.</p>
             <el-form-item
               prop="weight"
-              :rules="{ required: true, trigger: 'blur', message: 'Berat wajib diisi' }"
             >
-              <el-input placeholder="Kg" v-model="model.weight" type="number"></el-input>
+              <fo-input-number v-model="model.weight" placeholder="Kg"></fo-input-number>
             </el-form-item>
           </el-col>
         </el-row>
@@ -125,6 +124,20 @@ export default {
         destination: '',
         origin: '',
         weight: null,
+      },
+      rules: {
+        weight: [
+          { required: true, trigger: 'blur', message: 'Berat wajib diisi' },
+          {
+            validator: (_, value, cb) => {
+              if (value <= 0) {
+                cb(new Error('Berat minimal 1Kg'));
+              } else {
+                cb();
+              }
+            },
+          },
+        ],
       },
       destinations: [],
       origins: [],
@@ -197,6 +210,9 @@ export default {
           this.loading = false;
         }
       });
+    },
+    onInput(event) {
+      console.log(event);
     },
   },
 };
