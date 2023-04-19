@@ -26,7 +26,7 @@ const mutations = {
 };
 const actions = {
   async introspect({ commit }) {
-    if (localStorage.getItem('admintoken')) {
+    if (localStorage.getItem('token')) {
       try {
         const res = await auth.introspect();
         commit('SET_LOGGED_IN', true);

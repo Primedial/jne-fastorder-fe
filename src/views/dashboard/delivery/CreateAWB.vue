@@ -343,7 +343,7 @@
               <el-card class="cursor" :class="price.selected && 'bg-gray'">
                 <el-row :gutter="16">
                   <el-col :span="7">
-                    <el-image style="width: 80px;height; 80px" src="https://upload.wikimedia.org/wikipedia/commons/9/92/New_Logo_JNE.png"></el-image>
+                    <el-image style="width: 80px" src="https://upload.wikimedia.org/wikipedia/commons/9/92/New_Logo_JNE.png"></el-image>
                   </el-col>
                   <el-col :span="17">
                     <el-tag type="info" outlined class="service-tag"><strong>{{ price.service_display }}</strong></el-tag>
@@ -373,7 +373,7 @@
                     <small class="block text-gray">{{ selectedShipper.address || model.shipper.address}}</small>
                     <small class="block text-gray">{{ selectedShipper?.city_name }},
                       {{ selectedShipper.postal_code || model.shipper?.postal_code }}</small>
-                    <small class="block text-gray">{{ selectedShipper.phone_no || model.shipper?.phone_no }}</small>
+                    <small class="block text-primary">{{ selectedShipper.phone_no || model.shipper?.phone_no }}</small>
                   </div>
                 </el-col>
                 <el-col :span="6">
@@ -383,38 +383,42 @@
                     <small class="block text-gray">{{ selectedReceiver.address || model.receiver?.address }}</small>
                     <small class="block text-gray">{{ selectedReceiver.city_name }},
                       {{ selectedReceiver.postal_code || model.receiver?.postal_code }}</small>
-                    <small class="block text-gray">{{ selectedReceiver.phone_no || model.receiver?.phone_no }}</small>
+                    <small class="block text-primary">{{ selectedReceiver.phone_no || model.receiver?.phone_no }}</small>
                   </div>
                 </el-col>
               </el-row>
               <h4 class="mb-1 mt-2">Detail</h4>
-                <el-table :data="filteredPrice">
-                  <el-table-column label="Deskripsi">
-                    <template slot-scope="scope">
-                      <p class="my-0"><strong>{{ scope.row.service_display }}</strong></p>
-                      <small class="text-gray">Tipe barang: {{ scope.row.goods_type }} ({{ model.weight | formatNumber }}kg)</small>
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="Jumlah" width="80">
+              <el-table :data="filteredPrice">
+                <el-table-column label="Deskripsi">
+                  <template slot-scope="scope">
+                    <p class="my-0"><strong>{{ scope.row.service_display }}</strong></p>
+                    <small v-if="scope?.row?.goods_type" class="text-gray">Tipe barang: {{ scope.row.goods_type }} ({{ model.weight | formatNumber }}kg)</small>
+                  </template>
+                </el-table-column>
+                <el-table-column label="Jumlah" width="80">
+                  <template slot-scope="scope">
                     <p class="text-right">
-                      <strong>{{ model.quantity | formatNumber }}</strong>
+                      <strong v-if="scope?.row?.quantity">{{ scope.row.quantity | formatNumber }}</strong>
+                      <strong v-else>{{ model.quantity }}</strong>
                     </p>
-                  </el-table-column>
-                  <el-table-column label="Harga (/qty)">
-                    <template slot-scope="scope">
-                      <p class="text-right">
-                        <strong>{{ scope.row.discount_price | formatCurrency }}</strong>
-                      </p>
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="Subtotal Harga">
-                    <template slot-scope="scope">
-                      <p class="text-right">
-                        <strong>{{ (Number(scope.row.discount_price) * Number(model.quantity)) | formatCurrency }}</strong>
-                      </p>
-                    </template>
-                  </el-table-column>
-                </el-table>
+                  </template>
+                </el-table-column>
+                <el-table-column label="Harga (/qty)">
+                  <template slot-scope="scope">
+                    <p class="text-right">
+                      <strong>{{ scope.row.discount_price | formatCurrency }}</strong>
+                    </p>
+                  </template>
+                </el-table-column>
+                <el-table-column label="Subtotal Harga">
+                  <template slot-scope="scope">
+                    <p class="text-right">
+                      <strong>{{ (Number(scope.row.discount_price) * Number(model.quantity)) | formatCurrency }}</strong>
+                    </p>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <h3 class="text-right">Grand Total: {{ grandTotal | formatCurrency }}</h3>
             </el-card>
           </el-col>
           <el-col :span="8">
@@ -632,7 +636,17 @@ export default {
   },
   computed: {
     filteredPrice() {
-      return this.services.filter((service) => service.selected);
+      const arr = this.services.filter((service) => service.selected);
+      if (this.model.insured) {
+        return [
+          ...arr,
+          { service_display: 'Asuransi', quantity: 1, discount_price: 0 },
+        ];
+      }
+      return arr;
+    },
+    grandTotal() {
+      return this.filteredPrice.reduce((acc, curr) => acc + (curr.discount_price * this.model.quantity), 0);
     },
     selectedPriceAmount() {
       const filtered = this.services.filter((service) => service.selected);

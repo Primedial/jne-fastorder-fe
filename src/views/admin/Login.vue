@@ -53,7 +53,7 @@ export default {
               password: this.model.password,
             };
             const res = await auth.login(data);
-            localStorage.setItem('admintoken', res.data.token);
+            localStorage.setItem('token', res.data.token);
             await this.$router.push({ name: 'admin-overview' });
           } catch (e) {
             // do nothing

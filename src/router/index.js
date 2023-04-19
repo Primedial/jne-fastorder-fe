@@ -90,7 +90,7 @@ router.beforeEach(async (to, from, next) => {
   if (!store.getters['app/isLoaded']) {
     try {
       if (routeIdentifier(to) === 'admin') {
-        if (localStorage.getItem('admintoken')) {
+        if (localStorage.getItem('token')) {
           await store.dispatch('adminAuth/introspect');
         }
       } else {

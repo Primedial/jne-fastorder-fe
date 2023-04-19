@@ -38,7 +38,7 @@ export default {
     });
     adminInstance.interceptors.request.use((config) => {
       if (!adminPublicUrls.includes(config.url)) {
-        const token = localStorage.getItem('admintoken');
+        const token = localStorage.getItem('token');
         config.headers.Authorization = `Bearer ${token}`;
       }
       return config;
@@ -52,7 +52,7 @@ export default {
         });
       }
       if (error?.response?.status === 401) {
-        localStorage.removeItem('admintoken');
+        localStorage.removeItem('token');
         router.push('/mysales/login');
       }
       return Promise.reject(error);
