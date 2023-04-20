@@ -5,7 +5,7 @@ const BASE_URL = '/v1/wallet';
 async function topUpWallet(data) {
   const res = await Vue.axios({
     url: `${BASE_URL}/topup`,
-    method: 'PATCH',
+    method: 'PUT',
     data,
   });
 
