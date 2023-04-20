@@ -46,10 +46,11 @@
         <el-card>
           <h3 class="my-0 text-gray">Jumlah Pengiriman</h3>
           <apex-charts
+            ref="shipments"
             type="area"
             height="350"
             :options="chartOptions"
-            :series="series"
+            :series="monthlySeries"
           ></apex-charts>
         </el-card>
       </el-col>
@@ -57,6 +58,7 @@
         <el-card>
           <h3 class="my-0 text-gray">Tipe Pengiriman</h3>
           <apex-charts
+            ref="shipmentTypeChart"
             type="area"
             height="350"
             :options="chartOptions"
@@ -78,16 +80,8 @@ export default {
   },
   data() {
     return {
-      series: [
-        {
-          name: 'series1',
-          data: [31, 40, 28, 51, 42, 109, 100],
-        },
-        {
-          name: 'series2',
-          data: [11, 32, 45, 32, 34, 52, 41],
-        },
-      ],
+      series: [],
+      monthlySeries: [],
       chartOptions: {
         chart: {
           height: 350,
@@ -103,20 +97,12 @@ export default {
           curve: 'smooth',
         },
         xaxis: {
-          type: 'datetime',
-          categories: [
-            '2018-09-19T00:00:00.000Z',
-            '2018-09-19T01:30:00.000Z',
-            '2018-09-19T02:30:00.000Z',
-            '2018-09-19T03:30:00.000Z',
-            '2018-09-19T04:30:00.000Z',
-            '2018-09-19T05:30:00.000Z',
-            '2018-09-19T06:30:00.000Z',
-          ],
+          type: 'category',
+          categories: ['Jun', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         },
         tooltip: {
           x: {
-            format: 'dd/MM/yy HH:mm',
+            format: 'number',
           },
         },
       },
@@ -132,6 +118,7 @@ export default {
   },
   mounted() {
     this.fetchDeliveries();
+    this.fetchDeliveryOverview();
   },
   methods: {
     async fetchDeliveries() {
@@ -140,6 +127,45 @@ export default {
         this.overviews.totalDelivery = res.data.total;
       } catch (e) {
         // console.log(e);
+      }
+    },
+    async fetchDeliveryOverview() {
+      try {
+        const res = await awb.getDeliveryOverview();
+        console.log(res.data);
+        const months = [...Array(12)].map(() => 0);
+        const isCod = res.data.categorized_shipment.filter((item) => item.is_cod);
+        const isNonCod = res.data.categorized_shipment.filter((item) => !item.is_cod);
+        const codData = months.map((val, i) => {
+          const found = isCod.find((v) => v.month_num === i + 1);
+          return found?.total || val;
+        });
+        const nonCodData = months.map((val, i) => {
+          const found = isNonCod.find((v) => v.month_num === i + 1);
+          return found?.total || val;
+        });
+        this.$refs.shipmentTypeChart.updateSeries([
+          {
+            name: 'COD',
+            data: codData,
+          },
+          {
+            name: 'Non-COD',
+            data: nonCodData,
+          },
+        ]);
+        this.$refs.shipments.updateSeries([
+          {
+            name: 'Jumlah Pengiriman',
+            data: months.map((val, i) => {
+              const found = res.data.monthly_shipments.find((v) => v.month_num === i + 1);
+              return found?.total || val;
+            }),
+          },
+        ]);
+        console.log({ codData, nonCodData });
+      } catch (e) {
+        //
       }
     },
   },

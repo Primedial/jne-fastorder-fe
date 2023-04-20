@@ -69,7 +69,7 @@
         <el-table-column
           prop="reference_no"
           label="No Referensi"
-          width="180">
+          width="220">
         </el-table-column>
         <el-table-column
           label="Saldo Awal"

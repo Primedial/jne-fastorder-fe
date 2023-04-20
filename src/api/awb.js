@@ -62,6 +62,16 @@ async function getDeliveryHistory(params) {
   return res.data;
 }
 
+async function getDeliveryOverview(params) {
+  const res = await Vue.axios({
+    url: `${AWB_BASE_URL}/overview`,
+    method: 'GET',
+    params,
+  });
+
+  return res.data;
+}
+
 export default {
   getDestinations,
   getOrigins,
@@ -69,4 +79,5 @@ export default {
   generateAWB,
   getDeliveryHistory,
   bulkGenerateAWB,
+  getDeliveryOverview,
 };
