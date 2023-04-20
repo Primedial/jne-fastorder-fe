@@ -309,14 +309,13 @@
               <el-form-item
                 prop="goods_price"
                 label="Harga Barang"
-                :rules="{ required: true, trigger: 'blur', message: 'Harga barang wajib diisi' }"
               >
                 <fo-input-number v-model="model.goods_price" placeholder="Harga barang">
                   <template slot="prepend">Rp.</template>
                 </fo-input-number>
-                <el-checkbox v-model="model.insured" class="mt-4">Asuransi</el-checkbox>
               </el-form-item>
             </el-col>
+            <el-checkbox v-model="model.insured" class="mt-4">Asuransi</el-checkbox>
           </el-row>
           <el-divider></el-divider>
           <div class="flex justify-end">
@@ -537,8 +536,22 @@ export default {
           {
             validator: (_, value, cb) => {
               const val = Number(value);
-              if (val && val < 0) {
+              if (val <= 0) {
                 cb(new Error('Berat harus lebih besar daripada 0 (nol)'));
+              } else {
+                cb();
+              }
+            },
+            trigger: 'blur',
+          },
+        ],
+        goods_price: [
+          { required: true, trigger: 'blur', message: 'Harga barang wajib diisi' },
+          {
+            validator: (_, value, cb) => {
+              const val = Number(value);
+              if (val <= 0) {
+                cb(new Error('Harga barang tidak boleh 0 (nol)'));
               } else {
                 cb();
               }
