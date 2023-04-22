@@ -40,7 +40,7 @@ const actions = {
         // do nothing
       }
     }
-    commit('app/SET_LOADED');
+    commit('SET_LOADED', null, { root: true });
   },
 };
 

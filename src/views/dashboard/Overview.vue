@@ -163,7 +163,6 @@ export default {
             }),
           },
         ]);
-        console.log({ codData, nonCodData });
       } catch (e) {
         //
       }

@@ -1,15 +1,24 @@
 <template>
   <nav class="nav-wrapper">
-    <div class="flex items-center justify-between w-full">
-      <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item
-          v-for="path in paths"
-          :key="path.title"
-          :to="path"
-        >
-          {{ path.title }}
-        </el-breadcrumb-item>
-      </el-breadcrumb>
+    <div class="nav-container w-full">
+      <el-image
+        style="width: 90%; height: auto"
+        src="https://demo.permudahdakwah.com/images/fastorder.png"
+        fit="cover"
+        class="block m-auto nav-logo"
+        width="100px"
+      ></el-image>
+      <div class="nav-breadcrumb">
+        <el-breadcrumb separator-class="el-icon-arrow-right">
+          <el-breadcrumb-item
+            v-for="path in paths"
+            :key="path.title"
+            :to="path"
+          >
+            {{ path.title }}
+          </el-breadcrumb-item>
+        </el-breadcrumb>
+      </div>
       <el-dropdown>
         <span class="el-dropdown-link">
           <strong>{{ user.name }}</strong><i class="el-icon-arrow-down el-icon--right"></i>

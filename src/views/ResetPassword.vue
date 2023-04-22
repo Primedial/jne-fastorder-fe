@@ -8,17 +8,13 @@
           fit="cover"
           class="block m-auto"
         ></el-image>
-        <h4 class="text-center">Login ke Akun Anda</h4>
+        <h4 class="text-center">Reset Password Akun</h4>
         <el-form ref="form" :model="model" :rules="rules" class="mb-2" @keyup.native.enter="submit">
           <el-form-item prop="email" label="Email">
             <el-input v-model="model.email" clearable></el-input>
           </el-form-item>
-          <el-form-item prop="password" label="Password">
-            <el-input v-model="model.password" type="password" clearable></el-input>
-          </el-form-item>
         </el-form>
-        <el-button type="text" class="mb-2" @click="$router.push('reset-password')">Lupa password?</el-button>
-        <el-button type="primary" class="w-full" @click="submit">Login</el-button>
+        <el-button type="primary" class="w-full" :loading="loading" @click="submit">Submit Email</el-button>
       </el-card>
     </div>
   </div>
@@ -30,17 +26,13 @@ import auth from '@/api/auth';
 export default {
   data() {
     return {
-      err: null,
+      loading: false,
       model: {
         email: '',
-        password: '',
       },
       rules: {
         email: [
           { required: true, trigger: 'blur', message: 'Email wajib diisi' },
-        ],
-        password: [
-          { required: true, trigger: 'blur', message: 'Password wajib diisi' },
         ],
       },
     };
@@ -49,18 +41,22 @@ export default {
     submit() {
       this.$refs.form.validate(async (valid) => {
         if (valid) {
+          this.loading = true;
           try {
             const data = {
               email: this.model.email,
-              password: this.model.password,
             };
-            const res = await auth.login(data);
-            localStorage.setItem('token', res.data.token);
-            await this.$store.dispatch('auth/introspect');
-            await this.$router.push({ name: 'dashboard-overview' });
+            await auth.resetPassword(data);
+            await this.$router.push({ name: 'login' });
+            this.$notify({
+              type: 'success',
+              title: 'Sukses',
+              message: `Silahkan ikuti petunjuk yang sudah dikirim ke email ${this.model.email}`,
+            });
           } catch (e) {
             // do nothing
           }
+          this.loading = false;
         }
       });
     },

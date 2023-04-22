@@ -73,6 +73,7 @@
         </el-table-column>
         <el-table-column
           label="Saldo Awal"
+          width="200"
         >
           <template slot-scope="scope">
             <p class="text-right my-0">
@@ -82,6 +83,7 @@
         </el-table-column>
         <el-table-column
           label="Saldo Kiriman"
+          width="200"
         >
           <template slot-scope="scope">
             <p class="text-right my-0" :class="`text-${tagType(scope.row)}`">
@@ -91,6 +93,7 @@
         </el-table-column>
         <el-table-column
           label="Tanggal"
+          width="220"
           sortable
         >
           <template slot-scope="scope">

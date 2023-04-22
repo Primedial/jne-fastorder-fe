@@ -85,9 +85,9 @@
       <el-row :gutter="20">
         <el-col
           v-for="(price, i) in prices" :key="`price-${i}`"
-          :xs="12"
-          :sm="12"
-          :md="12"
+          :xs="24"
+          :sm="24"
+          :md="24"
           :lg="8"
           :xl="8"
           class="mb-2"

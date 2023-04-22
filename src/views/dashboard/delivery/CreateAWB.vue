@@ -11,7 +11,7 @@
     <transition-group name="el-fade-in" mode="out-in">
       <el-form v-show="currentStep === 0" key="el-form" ref="form" :model="model" label-position="top" class="mt-3" :rules="rules">
         <el-row :gutter="20" class="mb-2">
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="mb-2">
             <el-card>
               <h2 class="text-primary">Data Pengirim</h2>
               <el-checkbox v-model="newSender" @change="($event) => onToggleNewContact($event, 'sender')">Buat pengirim baru</el-checkbox>
@@ -331,9 +331,9 @@
         <el-row :gutter="20">
           <el-col
             v-for="(price, i) in services" :key="`price-${i}`"
-            :xs="12"
-            :sm="12"
-            :md="12"
+            :xs="24"
+            :sm="24"
+            :md="24"
             :lg="8"
             :xl="8"
             class="mb-2"
@@ -357,15 +357,15 @@
             </button>
           </el-col>
         </el-row>
-        <el-row :gutter="20">
-          <el-col :span="16">
-            <el-card>
+        <el-row :gutter="20" class="pb-2">
+          <el-col :sm="24" :md="24" :lg="16" :xl="16">
+            <el-card class="mb-2">
               <div class="flex items-center justify-between">
                 <h2 class="text-primary mt-0">Summary</h2>
                 <el-button icon="el-icon-edit" size="small" type="primary" @click="currentStep -= 1">Edit</el-button>
               </div>
               <el-row :gutter="16" class="mb-2">
-                <el-col :span="6">
+                <el-col :sm="12" :md="12" :lg="6" :xl="6">
                   <div class="mr-3">
                     <small class="text-gray"><strong>Pengirim</strong></small>
                     <h4 class="mb-1">{{ selectedShipper.name || model.shipper?.name }}</h4>
@@ -375,7 +375,7 @@
                     <small class="block text-primary">{{ selectedShipper.phone_no || model.shipper?.phone_no }}</small>
                   </div>
                 </el-col>
-                <el-col :span="6">
+                <el-col :sm="12" :md="12" :lg="6" :xl="6">
                   <div class="mr-3">
                     <small class="text-gray"><strong>Penerima</strong></small>
                     <h4 class="mb-1">{{ selectedReceiver.name || model.receiver?.name }}</h4>
@@ -388,7 +388,7 @@
               </el-row>
               <h4 class="mb-1 mt-2">Detail</h4>
               <el-table :data="filteredPrice">
-                <el-table-column label="Deskripsi">
+                <el-table-column label="Deskripsi" width="200">
                   <template slot-scope="scope">
                     <p class="my-0"><strong>{{ scope.row.service_display }}</strong></p>
                     <small v-if="scope?.row?.goods_type" class="text-gray">Tipe barang: {{ scope.row.goods_type }} ({{ model.weight | formatNumber }}kg)</small>
@@ -402,14 +402,14 @@
                     </p>
                   </template>
                 </el-table-column>
-                <el-table-column label="Harga (/qty)">
+                <el-table-column label="Harga (/qty)" width="200">
                   <template slot-scope="scope">
                     <p class="text-right">
                       <strong>{{ scope.row.discount_price | formatCurrency }}</strong>
                     </p>
                   </template>
                 </el-table-column>
-                <el-table-column label="Subtotal Harga">
+                <el-table-column label="Subtotal Harga" width="200">
                   <template slot-scope="scope">
                     <p class="text-right">
                       <strong>{{ (Number(scope.row.discount_price) * Number(model.quantity)) | formatCurrency }}</strong>
@@ -420,7 +420,7 @@
               <h3 class="text-right">Grand Total: {{ grandTotal | formatCurrency }}</h3>
             </el-card>
           </el-col>
-          <el-col :span="8">
+          <el-col :sm="24" :md="24" :lg="8" :xl="8">
             <el-card>
               <p class="mb-1 mt-0 text-gray">Saldo Wallet:</p>
               <h1 class="text-right">{{ user.wallet.amount | formatCurrency }}</h1>

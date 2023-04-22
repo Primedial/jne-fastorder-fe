@@ -3,6 +3,9 @@ import VueRouter from 'vue-router';
 import DashboardLayout from '@/layouts/dashboard.vue';
 import AdminDashboardLayout from '@/layouts/admin_dashboard.vue';
 import Login from '@/views/Login.vue';
+import SetPassword from '@/views/SetPassword.vue';
+import ResetPassword from '@/views/ResetPassword.vue';
+import Verify from '@/views/Verify.vue';
 import AdminLogin from '@/views/admin/Login.vue';
 import NotFound from '@/views/NotFound.vue';
 import store from '@/store';
@@ -23,6 +26,30 @@ const routes = [
     component: Login,
     meta: {
       title: 'Login',
+    },
+  },
+  {
+    path: '/set-password',
+    name: 'set-password',
+    component: SetPassword,
+    meta: {
+      title: 'Reset Password',
+    },
+  },
+  {
+    path: '/reset-password',
+    name: 'reset-password',
+    component: ResetPassword,
+    meta: {
+      title: 'Lupa Password',
+    },
+  },
+  {
+    path: '/verify',
+    name: 'verify',
+    component: Verify,
+    meta: {
+      title: 'Verifikasi Akun',
     },
   },
   {
@@ -58,7 +85,7 @@ const router = new VueRouter({
   routes,
 });
 
-const publicRoutes = ['/login', '/register', '/mysales/login'];
+const publicRoutes = ['/login', '/register', '/mysales/login', '/set-password'];
 const routeIdentifier = (to) => to.name.split('-')[0];
 
 const verifyRoutePath = (to, next) => {
@@ -87,7 +114,8 @@ const verifyRoutePath = (to, next) => {
 };
 
 router.beforeEach(async (to, from, next) => {
-  if (!store.getters['app/isLoaded']) {
+  console.log(store.getters);
+  if (!store.getters.loaded) {
     try {
       if (routeIdentifier(to) === 'admin') {
         if (localStorage.getItem('token')) {

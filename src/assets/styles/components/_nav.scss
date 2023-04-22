@@ -12,3 +12,60 @@
   background-color: #fff;
   z-index: 1000;
 }
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  display: none !important;
+  left: 1rem;
+}
+
+@media only screen
+and (min-width: 320px)
+and (max-width: 812px) {
+  .nav-wrapper {
+    width: calc(100% - 4rem);
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .nav-logo {
+    display: block !important;
+    position: absolute;
+    width: 150px !important;
+  }
+  .nav-breadcrumb {
+    display: none;
+  }
+  .nav-container {
+    justify-content: flex-end;
+  }
+  .el-step__title {
+    font-size: 10px;
+  }
+}
+@media only screen
+and (min-width:768px)
+and (max-width: 1024px) {
+  .nav-wrapper {
+    width: calc(100% - 4rem);
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .nav-logo {
+    display: block !important;
+    position: absolute;
+    width: 180px !important;
+  }
+  .nav-breadcrumb {
+    display: none;
+  }
+  .nav-container {
+    justify-content: flex-end;
+  }
+  .el-step__title {
+    font-size: 12px;
+  }
+}

@@ -4,6 +4,7 @@ import evaIcons from './evaIcons';
 import globalFilter from './globalFilter';
 import '@/assets/styles/main.scss';
 import globalComponents from './globalComponents';
+import hammer from './hammer';
 
 const plugins = {
   install(Vue) {
@@ -12,6 +13,7 @@ const plugins = {
     Vue.use(evaIcons);
     Vue.use(globalFilter);
     Vue.use(globalComponents);
+    Vue.use(hammer);
   },
 };
 
