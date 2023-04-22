@@ -58,6 +58,29 @@
         <small>Total: <strong>{{ total }}</strong></small>
       </div>
     </el-card>
+    <el-dialog :visible.sync="dialogVisible" :title="`No. Resi: ${trackingDetail?.cnote?.cnote_no}`">
+      <small class="block text-gray">Status</small>
+      <p><strong>{{ trackingDetail?.cnote?.pod_status }}</strong></p>
+      <el-row :gutter="16">
+        <el-col :span="12">
+          <small class="block text-gray">Tanggal Pengiriman</small>
+          <p><strong>{{ trackingDetail?.cnote?.cnote_pod_date }}</strong></p>
+        </el-col>
+        <el-col :span="12">
+          <small class="block text-gray">Service Code</small>
+          <p><strong>{{ trackingDetail?.cnote?.servicetype }}</strong></p>
+        </el-col>
+      </el-row>
+      <el-divider></el-divider>
+      <el-timeline :reverse="false">
+        <el-timeline-item
+          v-for="(activity, index) in trackingDetail?.history"
+          :key="index"
+          :timestamp="activity.date">
+          {{ activity.desc }}
+        </el-timeline-item>
+      </el-timeline>
+    </el-dialog>
   </div>
 </template>
 
@@ -72,6 +95,7 @@ export default {
       total: 0,
       search: '',
       dialogVisible: false,
+      trackingDetail: null,
     };
   },
   created() {
@@ -99,8 +123,21 @@ export default {
         console.log(e);
       }
     },
-    viewDeliveryStatus(row) {
-      console.log({ row });
+    async viewDeliveryStatus(row) {
+      try {
+        const res = await awb.getTrackingStatus(row.cnote_no);
+        this.trackingDetail = {
+          ...res.data,
+          cnote: {
+            ...res.data.cnote,
+            cnote_no: row.cnote_no,
+          },
+        };
+        this.dialogVisible = true;
+        console.log(this.trackingDetail);
+      } catch (e) {
+        //
+      }
     },
     async handlePageChange(page) {
       await this.$router.push({ name: 'dashboard-delivery', query: { page } });

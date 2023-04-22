@@ -114,7 +114,6 @@ const verifyRoutePath = (to, next) => {
 };
 
 router.beforeEach(async (to, from, next) => {
-  console.log(store.getters);
   if (!store.getters.loaded) {
     try {
       if (routeIdentifier(to) === 'admin') {

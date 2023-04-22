@@ -56,7 +56,7 @@
     <el-card>
       <h3>Riwayat Saldo</h3>
       <el-divider></el-divider>
-      <el-table :data="tableData" style="width:100%">
+      <el-table :data="tableData" style="width:100%" sort @sort-change="onChangeSort">
         <el-table-column
           label="Tipe"
           width="180">
@@ -72,8 +72,10 @@
           width="220">
         </el-table-column>
         <el-table-column
+          prop="original_amount"
           label="Saldo Awal"
           width="200"
+          sortable
         >
           <template slot-scope="scope">
             <p class="text-right my-0">
@@ -82,6 +84,8 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="amount"
+          sortable
           label="Saldo Kiriman"
           width="200"
         >
@@ -92,6 +96,7 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="created_at"
           label="Tanggal"
           width="220"
           sortable
@@ -141,6 +146,10 @@ export default {
         amount: null,
       },
       search: '',
+      sort: {
+        sort_by: ['created_at'],
+        sort_val: [2],
+      },
     };
   },
   computed: {
@@ -165,6 +174,8 @@ export default {
           page: this.currentPage,
           q: this.search,
           type: this.filterType,
+          sort_by: this.sort.sort_by.join(','),
+          sort_val: this.sort.sort_val.join(','),
         };
         const res = await wallet.getWalletHistory(params);
         this.total = res.data.total;
@@ -203,6 +214,28 @@ export default {
           this.loading = false;
         }
       });
+    },
+    onChangeSort(event) {
+      console.log(event, 'onchangesorttt');
+      const sorts = {
+        ascending: 1,
+        descending: 2,
+      };
+      this.sort.sort_by = [];
+      this.sort.sort_val = [];
+      if (!event.order) {
+        const idx = this.sort.sort_by.indexOf(event.prop);
+        this.sort.sort_by.splice(idx, 1);
+        this.sort.sort_val.splice(idx, 1);
+        if (this.sort.sort_by.length === 0) {
+          this.sort.sort_by = ['created_at'];
+          this.sort.sort_val = [2];
+        }
+      } else {
+        this.sort.sort_by.push(event.prop);
+        this.sort.sort_val.push(sorts[event.order]);
+      }
+      this.fetchHistoricalData();
     },
   },
 };

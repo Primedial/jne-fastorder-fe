@@ -72,6 +72,15 @@ async function getDeliveryOverview(params) {
   return res.data;
 }
 
+async function getTrackingStatus(awb) {
+  const res = await Vue.axios({
+    url: `${AWB_BASE_URL}/tracking/${awb}`,
+    method: 'GET',
+  });
+
+  return res.data;
+}
+
 export default {
   getDestinations,
   getOrigins,
@@ -80,4 +89,5 @@ export default {
   getDeliveryHistory,
   bulkGenerateAWB,
   getDeliveryOverview,
+  getTrackingStatus,
 };
