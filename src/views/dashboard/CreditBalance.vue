@@ -16,7 +16,7 @@
       </el-col>
       <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8" class="mb-2">
         <div class="w-full">
-          <el-button type="primary" icon="el-icon-plus" class="w-full mb-2" @click="topup">
+          <el-button type="primary" icon="el-icon-plus" class="w-full mb-2-i" @click="topup">
             Tambah Saldo
           </el-button>
         </div>
@@ -56,7 +56,15 @@
     <el-card>
       <h3>Riwayat Saldo</h3>
       <el-divider></el-divider>
-      <el-table :data="tableData" style="width:100%" sort @sort-change="onChangeSort">
+      <el-table
+        :data="tableData"
+        :default-sort="defaultSort"
+        style="width:100%"
+        :sort-desc.sync="sortDesc"
+        :sort-orders="sortOrders"
+        :sort-by.sync="sortBy"
+        @sort-change="onChangeSort"
+      >
         <el-table-column
           label="Tipe"
           width="180">
@@ -75,7 +83,7 @@
           prop="original_amount"
           label="Saldo Awal"
           width="200"
-          sortable
+          sortable="custom"
         >
           <template slot-scope="scope">
             <p class="text-right my-0">
@@ -85,9 +93,9 @@
         </el-table-column>
         <el-table-column
           prop="amount"
-          sortable
           label="Saldo Kiriman"
           width="200"
+          sortable="custom"
         >
           <template slot-scope="scope">
             <p class="text-right my-0" :class="`text-${tagType(scope.row)}`">
@@ -99,7 +107,7 @@
           prop="created_at"
           label="Tanggal"
           width="220"
-          sortable
+          sortable="custom"
         >
           <template slot-scope="scope">
             {{ scope.row.created_at | formatDate }}
@@ -149,6 +157,13 @@ export default {
       sort: {
         sort_by: ['created_at'],
         sort_val: [2],
+      },
+      sortBy: 'created_at',
+      sortDesc: false,
+      sortOrders: ['ascending', 'descending', null],
+      defaultSort: {
+        prop: 'created_at',
+        order: 'descending',
       },
     };
   },
@@ -216,7 +231,6 @@ export default {
       });
     },
     onChangeSort(event) {
-      console.log(event, 'onchangesorttt');
       const sorts = {
         ascending: 1,
         descending: 2,
@@ -235,7 +249,7 @@ export default {
         this.sort.sort_by.push(event.prop);
         this.sort.sort_val.push(sorts[event.order]);
       }
-      this.fetchHistoricalData();
+      return this.fetchHistoricalData();
     },
   },
 };

@@ -38,13 +38,6 @@
           <el-input v-model="model.name" clearable></el-input>
         </el-form-item>
         <el-form-item
-          prop="slug"
-          label="Slug"
-          :rules="{ required: true, trigger: 'blur', message: 'Slug wajib diisi' }"
-        >
-          <el-input v-model="model.slug" clearable></el-input>
-        </el-form-item>
-        <el-form-item
           prop="discount_percentage"
           label="Diskon (%)"
           :rules="{ required: true, trigger: 'blur', message: 'Diskon wajib diisi' }"

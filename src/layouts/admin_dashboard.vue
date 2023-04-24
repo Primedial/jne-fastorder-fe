@@ -1,5 +1,5 @@
 <template>
-  <main class="flex">
+  <main class="flex p-2">
     <Sidebar />
     <div class="app-wrapper">
       <Navbar />

@@ -134,7 +134,6 @@ export default {
           },
         };
         this.dialogVisible = true;
-        console.log(this.trackingDetail);
       } catch (e) {
         //
       }
