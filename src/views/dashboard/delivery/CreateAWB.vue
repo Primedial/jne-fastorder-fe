@@ -131,12 +131,12 @@
                 <div v-if="newReceipient">
                   <el-form-item
                     prop="receiver.name"
-                    label="Nama Pengirim"
+                    label="Nama Penerima"
                     :rules="{ required: true, trigger: 'blur', message: 'Nama penerima wajib diisi' }"
                   >
                     <el-input
                       v-model="model.receiver.name"
-                      placeholder="Nama pengirim"
+                      placeholder="Nama penerima"
                       clearable
                     ></el-input>
                   </el-form-item>
@@ -315,7 +315,7 @@
                 </fo-input-number>
               </el-form-item>
             </el-col>
-            <el-checkbox v-model="model.insured" class="mt-4">Asuransi</el-checkbox>
+            <el-checkbox v-model="model.insured" style="margin-top: 3.7rem">Asuransi</el-checkbox>
           </el-row>
           <el-divider></el-divider>
           <div class="flex justify-end">
@@ -521,7 +521,7 @@ export default {
           ],
         },
         receiver: {
-          name: [{ required: true, trigger: 'blur', message: 'Nama pengirim wajib diisi' }],
+          name: [{ required: true, trigger: 'blur', message: 'Nama penerima wajib diisi' }],
           phone_no: [
             { required: true, trigger: 'blur', message: 'Nomor Telepon wajib diisi' },
             { validator: phoneValidation, trigger: 'blur' },
@@ -741,6 +741,9 @@ export default {
         shipment_amount: 0,
       };
       this.currentStep = 0;
+      this.newSender = false;
+      this.newReceipient = false;
+      this.init();
     },
     onToggleNewContact(evt, type) {
       if (!evt) {

@@ -58,14 +58,39 @@
                   {{ scope.row.shipper.city_name }}
                 </template>
               </el-table-column>
+              <el-table-column label="Nama Pengirim" width="150">
+                <template slot-scope="scope">
+                  {{ scope.row.shipper.name }}
+                </template>
+              </el-table-column>
+              <el-table-column label="No. HP Pengirim" width="150">
+                <template slot-scope="scope">
+                  +62{{ scope.row.shipper.phone }}
+                </template>
+              </el-table-column>
               <el-table-column label="Kota Penerima" width="150">
                 <template slot-scope="scope">
                   {{ scope.row.receiver.city_name }}
                 </template>
               </el-table-column>
+              <el-table-column label="Nama Penerima" width="150">
+                <template slot-scope="scope">
+                  {{ scope.row.receiver.name }}
+                </template>
+              </el-table-column>
+              <el-table-column label="No. HP Penerima" width="150">
+                <template slot-scope="scope">
+                  +62{{ scope.row.receiver.phone }}
+                </template>
+              </el-table-column>
               <el-table-column label="Jenis Layanan" width="150">
                 <template slot-scope="scope">
                   <el-tag type="info"><strong>{{ scope.row.shipment_code }}</strong></el-tag>
+                </template>
+              </el-table-column>
+              <el-table-column label="COD" width="150">
+                <template slot-scope="scope">
+                  <el-checkbox v-model="scope.row.is_cod" disabled></el-checkbox>
                 </template>
               </el-table-column>
               <el-table-column label="Berat (Kg)" width="150">
@@ -76,6 +101,29 @@
               <el-table-column label="Jumlah Barang" width="150">
                 <template slot-scope="scope">
                   {{ scope.row.quantity }}
+                </template>
+              </el-table-column>
+              <el-table-column label="Harga Barang" width="150">
+                <template slot-scope="scope">
+                  {{ scope.row.goods_price | formatCurrency }}
+                </template>
+              </el-table-column>
+              <el-table-column label="Instruksi Pengiriman" width="170">
+                <template slot-scope="scope">
+                  <el-popover
+                    placement="top-start"
+                    title="Instruksi Pengiriman"
+                    width="200"
+                    trigger="hover"
+                    :content="scope.row.handling_instructions"
+                  >
+                    <el-button
+                      v-if="scope.row.handling_instructions && scope.row.handling_instructions !== ''"
+                      slot="reference"
+                      type="text"
+                      icon="el-icon-search"
+                    >Lihat</el-button>
+                  </el-popover>
                 </template>
               </el-table-column>
               <el-table-column label="Deskripsi Barang" width="200">
@@ -103,6 +151,20 @@
         </transition>
       </el-form>
     </el-card>
+    <el-dialog :visible.sync="isErrorDialogVisible">
+      <h2 class="my-0" slot="title"><span class="text-danger"><i class="el-icon-warning"></i></span> Error Upload Data Pengiriman</h2>
+      <p>Silakan cek kembali bahwa data yang diisi sudah benar</p>
+      <el-table :data="errors">
+        <el-table-column label="Row" prop="row" width="80"></el-table-column>
+        <el-table-column label="Deskripsi" prop="message">
+          <template slot-scope="scope">
+            <ul>
+              <li v-for="(err, i) in scope.row.message" :key="`err-${i}`">{{ err }}</li>
+            </ul>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -110,6 +172,7 @@
 import { read, utils } from 'xlsx';
 import { vehicle } from '@/constants/awb';
 import awb from '@/api/awb';
+import validator from '@/helpers/validator';
 
 export default {
   data() {
@@ -139,6 +202,8 @@ export default {
           label: 'Truck',
         },
       ],
+      errors: [],
+      isErrorDialogVisible: false,
     };
   },
   computed: {
@@ -151,6 +216,21 @@ export default {
     isSubmitDisabled() {
       return this.fileContents.length === 0 || this.user.wallet.amount < this.subtotal;
     },
+    isInsufficientBalance() {
+      return this.user.wallet.amount < this.subtotal;
+    },
+  },
+  watch: {
+    isInsufficientBalance(newVal) {
+      if (newVal) {
+        this.$message({
+          showClose: true,
+          duration: 0,
+          message: 'Saldo anda tidak mencukupi',
+          type: 'error',
+        });
+      }
+    },
   },
   methods: {
     fileHandler(event) {
@@ -159,14 +239,18 @@ export default {
         const file = event.target.files[0];
         this.file = file;
         const fr = new FileReader();
-        fr.onload = (evt) => {
+        this.fileContents = [];
+        this.tempFileContents = [];
+        fr.onload = async (evt) => {
           const data = evt.target.result;
           const xlsx = read(data, { type: 'binary' });
           const sheet = xlsx.SheetNames[0];
           const contents = utils.sheet_to_json(xlsx.Sheets[sheet]);
           this.tempFileContents = contents.map((row, i) => {
-            const [shipperCityCode, addr1] = row['Kode Kota Pengirim'].split('|');
-            const [receiverCityCode, rAddr1] = row['Kode Kota Penerima'].split('|');
+            // eslint-disable-next-line no-unsafe-optional-chaining
+            const [shipperCityCode, addr1] = row['Kode Kota Pengirim']?.split('|');
+            // eslint-disable-next-line no-unsafe-optional-chaining
+            const [receiverCityCode, rAddr1] = row['Kode Kota Penerima']?.split('|');
             return {
               id: i + 1,
               shipper: {
@@ -183,17 +267,18 @@ export default {
                 city_code: receiverCityCode,
                 city_name: rAddr1,
                 postal_code: row['Kode Pos Penerima'],
-                address: row['Alamat PengiPenerimarim'],
+                address: row['Alamat Penerima'],
               },
               goods_descriptions: row['Deskripsi Barang'],
-              handling_instructions: row['Intruksi Barang'],
+              handling_instructions: row['Instruksi Barang'],
               goods_price: Number(row['Harga Barang']),
-              shipment_code: row['Layana (REG,OKE, JTR)'],
+              shipment_code: row['Layanan (REG,OKE, JTR)'],
               quantity: row['Jumlah Barang'],
               weight: Number(row['Berat (Kg)']),
               is_cod: row['COD (YES/NO)'] === 'YES',
             };
           });
+          await this.contentValidator(this.tempFileContents);
           if (contents.length > 25) {
             this.$notify({
               type: 'error',
@@ -212,6 +297,66 @@ export default {
       }
       event.target.value = null;
       this.loading = false;
+    },
+    async contentValidator(contents) {
+      try {
+        this.errors = [];
+        const baseRules = {
+          name: 'required',
+          phone: 'required|numeric',
+          city_code: 'required',
+          city_name: 'required',
+          postal_code: 'required|integer|min:5',
+        };
+        const rules = {
+          shipper: baseRules,
+          receiver: baseRules,
+          weight: 'required|numeric|min:0.1',
+          quantity: 'required|integer|min:1',
+          shipment_code: 'required',
+          goods_descriptions: 'required',
+          goods_price: 'required|numeric|min:1',
+        };
+        const message = {
+          'required.shipper.name': 'Nama Pengirim wajib diisi',
+          'required.shipper.phone': 'No. HP Pengirim wajib diisi',
+          'numeric.shipper.phone': 'Format No. HP Pengirim Salah',
+          'required.shipper.city_code': 'Format Kota Pengirim salah',
+          'required.shipper.city_name': 'Format Kota Pengirim salah',
+          'required.shipper.postal_code': 'Format Kota Pengirim salah',
+          'required.receiver.name': 'Nama Penerima wajib diisi',
+          'required.receiver.phone': 'No. HP Penerima wajib diisi',
+          'numeric.receiver.phone': 'Format No. HP Penerima Salah',
+          'required.receiver.city_code': 'Format Kota Penerima salah',
+          'required.receiver.city_name': 'Format Kota Penerima salah',
+          'required.receiver.postal_code': 'Format Kota Penerima salah',
+          'required.goods_descriptions': 'Deskripsi Barang wajib diisi',
+          'required.goods_price': 'Harga Barang wajib diisi dan tidak boleh 0',
+          'numeric.goods_price': 'Format Harga Barang salah',
+          'min.goods_price': 'Harga Barang tidak boleh 0 (Nol)',
+          'required.quantity': 'Jumlah Barang wajib diisi',
+          'integer.quantity': 'Format Jumlah Barang salah',
+          'min.quantity': 'Format Jumlah Barang salah minimal 1',
+          'required.weight': 'Berat Barang wajib diisi',
+          'numeric.weight': 'Format Berat Barang salah',
+          'min.weight': 'Berat Barang tidak boleh 0 (Nol)',
+        };
+        await Promise.all(contents.map(async (row, i) => {
+          await validator({ body: row, rules, message }, (err, status) => {
+            if (err) {
+              Object.keys(err.errors).forEach((key) => {
+                this.errors.push({ row: i + 2, message: err.errors[key] });
+              });
+            }
+          });
+        }));
+        if (this.errors.length > 0) {
+          throw new Error(this.errors);
+        }
+      } catch (e) {
+        this.isErrorDialogVisible = true;
+        throw e;
+      }
     },
     async checkPrice() {
       this.loading = true;
