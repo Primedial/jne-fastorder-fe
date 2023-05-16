@@ -5,7 +5,7 @@
       <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8" class="mb-2">
         <el-card class="bg-primary">
           <p class="text-light">Total Saldo</p>
-          <h1 class="text-light text-right">{{ user.wallet.amount | formatCurrency }}</h1>
+          <h1 class="text-light text-right">{{ user?.wallet?.amount | formatCurrency }}</h1>
         </el-card>
       </el-col>
       <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8" class="mb-2">

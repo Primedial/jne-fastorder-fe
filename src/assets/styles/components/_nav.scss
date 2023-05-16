@@ -1,11 +1,11 @@
 .nav-wrapper {
   display: flex;
   align-items: center;
-  position: fixed;
+  position: relative;
   top: 1rem;
   margin: auto;
   padding: 1rem;
-  left: calc(250px + 2rem);
+  //left: calc(250px + 2rem);
   height: 42px;
   width: calc(100vw - 332px);
   border-radius: 12px;

@@ -46,6 +46,11 @@ export const adminNavMenu = [
     icon: 'activity-outline',
   },
   {
+    path: 'bank',
+    title: 'Bank',
+    icon: 'home-outline',
+  },
+  {
     path: 'user-type',
     title: 'Tipe User',
     icon: 'bookmark-outline',

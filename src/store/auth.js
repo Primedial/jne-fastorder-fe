@@ -47,7 +47,7 @@ const actions = {
 const getters = {
   isLoaded: (state) => state.loaded,
   isLoggedIn: (state) => state.isLoggedIn,
-  user: (state) => state.user,
+  user: (state) => state.user.user,
 };
 
 export default {

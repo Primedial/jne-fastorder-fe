@@ -22,6 +22,13 @@
             </el-tag>
           </template>
         </el-table-column>
+        <el-table-column prop="is_verified" label="Verified" width="200">
+          <template slot-scope="scope">
+            <el-tag :type="scope.row.is_verified ? 'success' : 'warning'" class="w-full">
+              <p class="text-center my-0"><strong class="text-center">{{ scope.row.is_verified ? 'YES' : 'NO' }}</strong></p>
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column prop="admin_user.name" label="Created By" width="200"></el-table-column>
         <el-table-column fixed="right">
           <template slot-scope="scope">
@@ -41,63 +48,21 @@
         <small>Total: <strong>{{ total }}</strong></small>
       </div>
     </el-card>
-    <el-dialog :visible.sync="dialogVisible" title="Tambah/Edit User" width="400px">
-      <el-form ref="form" :model="model" :rules="rules" label-position="top">
-        <el-form-item prop="name" label="Nama">
-          <el-input v-model="model.name" clearable></el-input>
-        </el-form-item>
-        <el-form-item prop="email" label="Email">
-          <el-input v-model="model.email" clearable></el-input>
-        </el-form-item>
-        <el-form-item prop="user_type_id" label="Tipe User">
-          <el-select v-model="model.user_type_id" class="w-full">
-            <el-option v-for="userType in userTypes" :key="userType.id" :label="userType.name" :value="userType.id"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item prop="phone_no" label="No. Telepon">
-          <fo-input-number v-model="model.phone_no" :formatted="false" clearable>
-            <template slot="prepend">+62</template>
-          </fo-input-number>
-        </el-form-item>
-        <el-form-item prop="address" label="Address">
-          <el-input v-model="model.address" type="textarea" :rows="3" clearable></el-input>
-        </el-form-item>
-      </el-form>
-      <el-button type="primary" class="w-full" :loading="loading" @click="submit">Submit</el-button>
-    </el-dialog>
   </div>
 </template>
 
 <script>
 import user from '@/api/admin/user';
-import userType from '@/api/admin/userType';
 
 export default {
   data() {
-    const phoneValidation = (_, value, cb) => {
-      if (String(value).length < 10 || String(value).length > 12) {
-        cb(new Error('Nomor Telepon tidak valid.'));
-      } else {
-        cb();
-      }
-    };
     return {
       loading: false,
       tableData: [],
-      rules: {
-        name: [{ required: true, trigger: 'blur', message: 'Nama wajib diisi' }],
-        email: [{ required: true, trigger: 'blur', message: 'Email wajib diisi' }],
-        phone_no: [
-          { required: true, trigger: 'blur', message: 'Nomor Telepon wajib diisi' },
-          { validator: phoneValidation, trigger: 'blur' },
-        ],
-        user_type_id: [{ required: true, trigger: 'blur', message: 'Tipe User wajib diisi' }],
-      },
       total: 0,
       currentPage: 1,
       search: '',
       dialogVisible: false,
-      userTypes: [],
       model: {
         name: '',
       },
@@ -105,7 +70,6 @@ export default {
   },
   created() {
     this.fetchData();
-    this.fetchUserTypes();
     if (this.$route.query.page) {
       this.currentPage = Number(this.$route.query.page);
     }
@@ -116,10 +80,6 @@ export default {
     },
   },
   methods: {
-    async fetchUserTypes() {
-      const res = await userType.getAll();
-      this.userTypes = res.data.data;
-    },
     async fetchData() {
       try {
         const params = {
@@ -134,9 +94,7 @@ export default {
       }
     },
     edit(row) {
-      this.model = { ...row };
-      this.model.user_type_id = row.user_type.id;
-      this.dialogVisible = true;
+      this.$router.push({ name: 'admin-user-detail', params: { id: row.id } });
     },
     submit() {
       this.$refs.form.validate(async (valid) => {
@@ -155,11 +113,7 @@ export default {
       });
     },
     newUser() {
-      this.dialogVisible = true;
-      this.model = {
-        name: '',
-        user_type_id: null,
-      };
+      this.$router.push({ name: 'admin-user-new' });
     },
     handlePageChange(page) {
       this.$router.push({ name: 'admin-user', query: { ...this.$route.query, page } });

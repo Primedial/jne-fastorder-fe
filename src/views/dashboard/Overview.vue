@@ -5,7 +5,7 @@
       <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8" class="mb-2">
         <el-card class="bg-primary">
           <p class="text-light mt-0">Total Saldo</p>
-          <h2 class="text-light black text-right">{{ user.wallet.amount | formatCurrency }}</h2>
+          <h2 class="text-light black text-right">{{ user?.wallet?.amount | formatCurrency }}</h2>
         </el-card>
       </el-col>
       <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8" class="mb-2">
@@ -132,7 +132,6 @@ export default {
     async fetchDeliveryOverview() {
       try {
         const res = await awb.getDeliveryOverview();
-        console.log(res.data);
         const months = [...Array(12)].map(() => 0);
         const isCod = res.data.categorized_shipment.filter((item) => item.is_cod);
         const isNonCod = res.data.categorized_shipment.filter((item) => !item.is_cod);
