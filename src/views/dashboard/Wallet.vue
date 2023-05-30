@@ -180,7 +180,7 @@ export default {
       this.dialogTopupVisible = true;
     },
     tagType(row) {
-      return [transactionType.TOPUP, transactionType.CASHBACK].includes(row.transaction_type)
+      return [transactionType.TOPUP, transactionType.CASHBACK, transactionType.CANCEL_ORDER].includes(row.transaction_type)
         ? 'success' : 'danger';
     },
     async fetchHistoricalData() {

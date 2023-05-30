@@ -1,10 +1,11 @@
 import Overview from '@/views/dashboard/Overview.vue';
 import Monitoring from '@/views/dashboard/Monitoring.vue';
 import ShippingFee from '@/views/dashboard/delivery/ShippingFee.vue';
-import CreditBalance from '@/views/dashboard/CreditBalance.vue';
+import CreditBalance from '@/views/dashboard/Wallet.vue';
 import CreateAWB from '@/views/dashboard/delivery/CreateAWB.vue';
 import DeliveryOverview from '@/views/dashboard/delivery/DeliveryOverview.vue';
 import BulkCreateAWB from '@/views/dashboard/delivery/BulkCreateAWB.vue';
+import Contact from '@/views/dashboard/Contact.vue';
 
 export default [
   {
@@ -61,6 +62,14 @@ export default [
     component: DeliveryOverview,
     meta: {
       title: 'Riwayat Pengiriman',
+    },
+  },
+  {
+    path: 'contact',
+    name: 'dashboard-contact',
+    component: Contact,
+    meta: {
+      title: 'Daftar Kontak',
     },
   },
 ];

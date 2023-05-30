@@ -21,7 +21,17 @@
                   prop="shipper_contact_id"
                   label="Nama pengirim"
                 >
-                  <el-select v-model="model.shipper_contact_id" value-key="id" placeholder="Pilih pengirim" class="w-full" @change="onHandleChange">
+                  <el-select
+                    v-model="model.shipper_contact_id"
+                    value-key="id"
+                    placeholder="Pilih pengirim"
+                    class="w-full"
+                    filterable
+                    remote
+                    reserve-keyword
+                    :remote-method="($event) => remoteMethodContact($event, 'shipper')"
+                    @change="onHandleChange"
+                  >
                     <el-option
                       v-for="item in shipperContact"
                       :key="`shipper-${item.id}`"
@@ -116,7 +126,17 @@
                   label="Nama penerima"
                   :rules="{ required: true, trigger: 'blur', message: 'Nama penerima wajib diisi' }"
                 >
-                  <el-select v-model="model.receiver_contact_id" placeholder="Pilih pengirim" class="w-full" value-key="id" @change="onHandleChange">
+                  <el-select
+                    v-model="model.receiver_contact_id"
+                    filterable
+                    remote
+                    reserve-keyword
+                    placeholder="Pilih penerima"
+                    :remote-method="($event) => remoteMethodContact($event, 'receiver')"
+                    class="w-full"
+                    value-key="city_code"
+                    @change="($event) => onHandleChange($event, 'receiver')"
+                  >
                     <el-option
                       v-for="item in receiverContact"
                       :key="item.id"
@@ -199,23 +219,8 @@
         </el-row>
         <el-card>
           <h2 class="text-primary">Data Kiriman</h2>
-          <el-form-item
-            prop="vehicle"
-            label="Kendaraan Pickup"
-            :rules="{ required: true, trigger: 'blur', message: 'Kendaraan wajib diisi' }"
-          >
-            <el-select v-model="model.vehicle" placeholder="Pilih kendaraan" class="w-full">
-              <el-option
-                v-for="vehicle in vehicles"
-                :key="vehicle.value"
-                :label="vehicle.label"
-                :value="vehicle.value"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
           <el-row :gutter="20" class="mb-2">
-            <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8">
+            <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
               <el-form-item
                 prop="cod"
                 label="Jenis Kiriman"
@@ -230,36 +235,6 @@
                   <el-option
                     label="COD"
                     :value="serviceType.COD"
-                  >
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8">
-              <el-form-item
-                prop="pickup_type"
-                label="PickUp / Drop Off"
-                :rules="{ required: true, trigger: 'blur', message: 'Field wajib diisi' }"
-              >
-                <el-select v-model="model.pickup_type" placeholder="PickUp" class="w-full">
-                  <el-option
-                    v-for="pick in pickupTypes"
-                    :key="pick.value"
-                    :label="pick.label"
-                    :value="pick.value"
-                  >
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8">
-              <el-form-item prop="agent" label="Pilih Agent">
-                <el-select v-model="model.agent" placeholder="Pilih Agent" class="w-full">
-                  <el-option
-                    v-for="item in agents"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
                   >
                   </el-option>
                 </el-select>
@@ -645,6 +620,8 @@ export default {
         address: '',
       },
       generatedAwb: null,
+      searchShipper: '',
+      searchReceiver: '',
     };
   },
   computed: {
@@ -699,8 +676,8 @@ export default {
         const receivers = await contact.getContact({ type: contactUsageType.RECEIVER });
         const origins = await awb.getDestinations();
         const destinations = await awb.getOrigins();
-        this.shipperContact = shippers.data;
-        this.receiverContact = receivers.data;
+        this.shipperContact = shippers.data.data;
+        this.receiverContact = receivers.data.data;
         this.origins = origins.data;
         this.destinations = destinations.data;
       } catch (e) {
@@ -817,6 +794,17 @@ export default {
       this.searchDestination = str;
       const dest = await awb.getDestinations({ q: str });
       this.destinations = dest.data;
+    },
+    async remoteMethodContact(str, type) {
+      if (type === 'shipper') {
+        this.searchShipper = str;
+        const res = await contact.getContact({ q: str, search_by: 'name', type: contactUsageType.SHIPPER })
+        this.shipperContact = res.data.data;
+      } else {
+        this.searchReceiver = str;
+        const res = await contact.getContact({ q: str, search_by: 'name', type: contactUsageType.RECEIVER })
+        this.receiverContact = res.data.data;
+      }
     },
     async submit() {
       switch (this.currentStep) {

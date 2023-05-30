@@ -1,6 +1,52 @@
 <template>
   <div>
     <h1>Riwayat Pengiriman</h1>
+    <el-card class="mb-2">
+      <el-form :model="searchModel" label-position="top">
+        <el-row :gutter="16">
+          <el-col :span="14">
+            <el-form-item label="Search">
+              <el-input v-model="searchModel.filterValue" clearable>
+                <el-select v-model="searchModel.filterBy" slot="prepend" placeholder="Select" style="width: 150px;">
+                  <el-option
+                    v-for="option in searchOptions"
+                    :key="option.value"
+                    :label="option.label"
+                    :value="option.value"
+                  ></el-option>
+                </el-select>
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="Tanggal">
+              <el-date-picker
+                v-model="searchModel.dateRange"
+                type="daterange"
+                range-separator="-"
+                start-placeholder="Tanggal"
+                end-placeholder="Tanggal"
+                style="width: 100%;"
+              >
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4">
+            <el-form-item label="Status Pengiriman">
+              <el-select v-model="searchModel.status" multiple placeholder="Select" collapse-tags>
+                <el-option label="Processing" value="100"></el-option>
+                <el-option label="Returned" value="102"></el-option>
+                <el-option label="Delivered" value="101"></el-option>
+                <el-option label="Canceled" value="103"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div class="flex justify-end">
+        <el-button type="primary" :loading="loading" icon="el-icon-search" @click="searchData">Cari</el-button>
+      </div>
+    </el-card>
     <el-card>
       <el-table :data="tableData">
         <el-table-column prop="cnote_no" label="Nomor Resi" width="180" fixed="left">
@@ -22,25 +68,30 @@
         </el-table-column>
         <el-table-column label="Pengirim" width="250">
           <template slot-scope="scope">
-            {{ scope.row.shipper?.name || scope.row.static_shipper_name }}
+            {{ scope.row.shipper?.name }}
           </template>
         </el-table-column>
         <el-table-column label="Kota Pengirim" width="250">
           <template slot-scope="scope">
-            {{ scope.row.shipper?.city_name || scope.row.static_shipper_city_name }}
+            {{ scope.row.shipper?.city_name }}
           </template>
         </el-table-column>
         <el-table-column label="Penerima" width="250">
           <template slot-scope="scope">
-            {{ scope.row.receiver?.name || scope.row.static_receiver_name }}
+            {{ scope.row.receiver?.name }}
           </template>
         </el-table-column>
         <el-table-column label="Kota Penerima" width="250">
           <template slot-scope="scope">
-            {{ scope.row.receiver?.name || scope.row.static_receiver_city_name }}
+            {{ scope.row.receiver?.city_name }}
           </template>
         </el-table-column>
-        <el-table-column label="Status" width="150">
+        <el-table-column label="Tanggal Pengiriman" width="250">
+          <template slot-scope="scope">
+            {{ scope.row.created_at | formatDate('DD MMM YYYY HH:mm') }}
+          </template>
+        </el-table-column>
+        <el-table-column label="Status" width="150" fixed="right">
           <template slot-scope="scope">
             <el-button type="text" icon="el-icon-search" @click="viewDeliveryStatus(scope.row)">Lihat</el-button>
           </template>
@@ -50,7 +101,7 @@
         <el-pagination
           layout="prev, pager, next"
           :total="total"
-          :page-size="10"
+          :page-size="15"
           :current-page.sync="currentPage"
           @current-change="handlePageChange"
         >
@@ -86,16 +137,46 @@
 
 <script>
 import awb from '@/api/awb';
+import dayjs from 'dayjs';
 
 export default {
   data() {
     return {
+      searchOptions: [
+        {
+          label: 'Nama Pengirim',
+          value: 'shipper_name',
+        },
+        {
+          label: 'Kota Pengirim',
+          value: 'shipper_city',
+        },
+        {
+          label: 'Nama Penerima',
+          value: 'receiver_name',
+        },
+        {
+          label: 'Kota Penerima',
+          value: 'receiver_city',
+        },
+        {
+          label: 'No. Resi',
+          value: 'cnote_no',
+        },
+      ],
+      searchModel: {
+        filterBy: null,
+        filterValue: '',
+        dateRange: [],
+        status: [],
+      },
       tableData: [],
       currentPage: 1,
       total: 0,
       search: '',
       dialogVisible: false,
       trackingDetail: null,
+      loading: false,
     };
   },
   created() {
@@ -111,10 +192,14 @@ export default {
   },
   methods: {
     async fetchData() {
+      this.loading = true;
       try {
         const params = {
           page: this.currentPage,
-          q: this.search,
+          search_by: this.searchModel.filterBy,
+          q: this.searchModel.filterValue,
+          status: this.searchModel.status.join(','),
+          range: this.searchModel.dateRange.map((i) => dayjs(i).format('YYYY-MM-DD')).join(','),
         };
         const res = await awb.getDeliveryHistory(params);
         this.total = res.data.total;
@@ -122,6 +207,10 @@ export default {
       } catch (e) {
         console.log(e);
       }
+      this.loading = false;
+    },
+    searchData() {
+      this.fetchData();
     },
     async viewDeliveryStatus(row) {
       try {

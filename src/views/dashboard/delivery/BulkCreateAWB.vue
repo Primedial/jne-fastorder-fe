@@ -65,7 +65,7 @@
               </el-table-column>
               <el-table-column label="No. HP Pengirim" width="150">
                 <template slot-scope="scope">
-                  +62{{ scope.row.shipper.phone }}
+                  +62{{ scope.row.shipper.phone_no }}
                 </template>
               </el-table-column>
               <el-table-column label="Kota Penerima" width="150">
@@ -80,7 +80,7 @@
               </el-table-column>
               <el-table-column label="No. HP Penerima" width="150">
                 <template slot-scope="scope">
-                  +62{{ scope.row.receiver.phone }}
+                  +62{{ scope.row.receiver.phone_no }}
                 </template>
               </el-table-column>
               <el-table-column label="Jenis Layanan" width="150">
@@ -255,7 +255,7 @@ export default {
               id: i + 1,
               shipper: {
                 name: row['Nama Pengirim'],
-                phone: row['No. Hp Pengirim'],
+                phone_no: row['No. Hp Pengirim'],
                 city_code: shipperCityCode,
                 city_name: addr1,
                 postal_code: row['Kode Pos Pengirim'],
@@ -263,7 +263,7 @@ export default {
               },
               receiver: {
                 name: row['Nama Penerima'],
-                phone: row['No. Hp Penerima'],
+                phone_no: row['No. Hp Penerima'],
                 city_code: receiverCityCode,
                 city_name: rAddr1,
                 postal_code: row['Kode Pos Penerima'],
@@ -303,7 +303,7 @@ export default {
         this.errors = [];
         const baseRules = {
           name: 'required',
-          phone: 'required|numeric',
+          phone_no: 'required|numeric',
           city_code: 'required',
           city_name: 'required',
           postal_code: 'required|integer|min:5',
@@ -320,13 +320,13 @@ export default {
         const message = {
           'required.shipper.name': 'Nama Pengirim wajib diisi',
           'required.shipper.phone': 'No. HP Pengirim wajib diisi',
-          'numeric.shipper.phone': 'Format No. HP Pengirim Salah',
+          'numeric.shipper.phone_no': 'Format No. HP Pengirim Salah',
           'required.shipper.city_code': 'Format Kota Pengirim salah',
           'required.shipper.city_name': 'Format Kota Pengirim salah',
           'required.shipper.postal_code': 'Format Kota Pengirim salah',
           'required.receiver.name': 'Nama Penerima wajib diisi',
-          'required.receiver.phone': 'No. HP Penerima wajib diisi',
-          'numeric.receiver.phone': 'Format No. HP Penerima Salah',
+          'required.receiver.phone_no': 'No. HP Penerima wajib diisi',
+          'numeric.receiver.phone_no': 'Format No. HP Penerima Salah',
           'required.receiver.city_code': 'Format Kota Penerima salah',
           'required.receiver.city_name': 'Format Kota Penerima salah',
           'required.receiver.postal_code': 'Format Kota Penerima salah',

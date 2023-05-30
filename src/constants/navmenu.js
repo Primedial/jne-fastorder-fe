@@ -10,6 +10,11 @@ export const navMenu = [
     icon: 'monitor-outline',
   },
   {
+    path: 'contact',
+    title: 'Kontak',
+    icon: 'book-outline',
+  },
+  {
     path: 'shipping',
     title: 'Pengiriman',
     icon: 'swap-outline',
