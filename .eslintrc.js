@@ -23,5 +23,6 @@ module.exports = {
     'no-lonely-if': 'off',
     'vue/no-custom-modifiers-on-v-model': 'off',
     'no-unused-vars': 'warn',
+    'vue/no-mutating-props': 'off',
   },
 };

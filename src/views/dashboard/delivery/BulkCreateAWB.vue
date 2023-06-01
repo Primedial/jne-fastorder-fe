@@ -18,22 +18,6 @@
       <el-form ref="form" :model="model" label-position="top">
         <el-row :gutter="16">
           <el-col :span="10">
-            <el-form-item
-              prop="vehicle"
-              label="Jenis Kendaraan"
-              :rules="{ required: true, trigger: 'blur', message: 'Jenis kendaraan wajib diisi'}"
-            >
-              <el-select v-model="model.vehicle" class="w-full">
-                <el-option
-                  v-for="v in vehicles"
-                  :key="`vehicle-${v.value}`"
-                  :label="v.label"
-                  :value="v.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="10">
             <el-form-item prop="insured" label="Asuransi">
               <el-checkbox v-model="model.insured">Asuransi</el-checkbox>
             </el-form-item>
@@ -188,20 +172,6 @@ export default {
         vehicle: null,
         insured: false,
       },
-      vehicles: [
-        {
-          value: vehicle.MOBIL,
-          label: 'Mobil',
-        },
-        {
-          value: vehicle.MOTOR,
-          label: 'Motor',
-        },
-        {
-          value: vehicle.TRUCK,
-          label: 'Truck',
-        },
-      ],
       errors: [],
       isErrorDialogVisible: false,
     };
@@ -224,8 +194,8 @@ export default {
     isInsufficientBalance(newVal) {
       if (newVal) {
         this.$message({
-          showClose: true,
-          duration: 0,
+          showClose: false,
+          duration: 5000,
           message: 'Saldo anda tidak mencukupi',
           type: 'error',
         });
@@ -383,7 +353,6 @@ export default {
           this.loading = true;
           try {
             const payload = {
-              vehicle: this.model.vehicle,
               insured: this.model.insured,
               deliveries: this.fileContents.map((val) => ({
                 ...val,

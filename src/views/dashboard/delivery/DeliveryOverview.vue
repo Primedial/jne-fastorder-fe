@@ -106,7 +106,7 @@
           @current-change="handlePageChange"
         >
         </el-pagination>
-        <small>Total: <strong>{{ total }}</strong></small>
+        <small>Total: <strong>{{ total | formatNumber }}</strong></small>
       </div>
     </el-card>
     <el-dialog :visible.sync="dialogVisible" :title="`No. Resi: ${trackingDetail?.cnote?.cnote_no}`">

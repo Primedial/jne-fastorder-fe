@@ -19,7 +19,7 @@
         <el-table-column label="Kode POS" prop="postal_code" width="250"></el-table-column>
         <el-table-column width="150" fixed="right">
           <template slot-scope="scope">
-            <el-button type="text" icon="el-icon-edit" @click="viewDeliveryStatus(scope.row)">Edit</el-button>
+            <el-button type="text" @click="viewDetail(scope.row)">Detail</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -32,21 +32,45 @@
           @current-change="handlePageChange"
         >
         </el-pagination>
-        <small>Total: <strong>{{ total }}</strong></small>
+        <small>Total: <strong>{{ total | formatNumber }}</strong></small>
       </div>
     </el-card>
+    <ContactModal
+      v-model="visible"
+      :model="model"
+      :loading="loading"
+      @submit="submit"
+    />
   </div>
 </template>
 
 <script>
 import contact from '@/api/contact';
+import ContactModal from '@/components/dashboard/contact/ContactModal.vue';
+
+const defaultFormState = () => ({
+  contact_type: null,
+  name: '',
+  phone_no: '',
+  city_code: null,
+  city_name: '',
+  address: '',
+  postal_code: '',
+  is_allow_edit: false,
+});
 
 export default {
+  components: {
+    ContactModal,
+  },
   data() {
     return {
       tableData: [],
       total: 0,
       currentPage: 1,
+      model: defaultFormState(),
+      visible: false,
+      loading: false,
     };
   },
   created() {
@@ -67,7 +91,6 @@ export default {
           page: this.currentPage,
         };
         const res = await contact.getContact(params);
-        console.log(res.data);
         this.tableData = res.data.data;
         this.total = res.data.total;
       } catch (e) {
@@ -81,6 +104,35 @@ export default {
         behavior: 'smooth',
       });
       this.currentPage = page;
+    },
+    async viewDetail({ id }) {
+      try {
+        const res = await contact.getContactDetail(id);
+        this.model = res.data;
+        this.model.phone_no = this.model.phone_no.replace('+62', '');
+        this.visible = true;
+      } catch (e) {
+        //
+      }
+    },
+    async submit() {
+      this.loading = true;
+      try {
+        await contact.createEdit(this.model);
+        this.model = defaultFormState();
+        this.visible = false;
+        let prefix = 'Edit';
+        if (!this.model.id) {
+          prefix = 'Tambah';
+        }
+        this.$notify({
+          title: 'Sukses',
+          message: `${prefix} kontak berhasil`,
+        });
+      } catch (e) {
+        //
+      }
+      this.loading = false;
     },
   },
 };

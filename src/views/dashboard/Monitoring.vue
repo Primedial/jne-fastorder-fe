@@ -2,7 +2,7 @@
   <div>
     <el-card class="bg-primary mt-3 mb-2">
       <h4 class="text-light">Total Kiriman</h4>
-      <h1 class="text-right text-light">{{ total }}</h1>
+      <h1 class="text-right text-light">{{ total | formatNumber }}</h1>
     </el-card>
     <el-card>
       <h2 class="my-0">Monitoring</h2>
@@ -67,7 +67,7 @@
           @current-change="handlePageChange"
         >
         </el-pagination>
-        <small>Total: <strong>50</strong></small>
+        <small>Total: <strong>{{ total | formatNumber }}</strong></small>
       </div>
     </el-card>
   </div>
