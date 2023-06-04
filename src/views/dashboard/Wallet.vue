@@ -54,7 +54,19 @@
       </el-col>
     </el-row>
     <el-card>
-      <h3>Riwayat Saldo</h3>
+      <div class="flex items-center justify-between">
+        <h3>Riwayat Transaksi</h3>
+        <div class="flex items-center">
+          <span class="block mr-2">Status: </span>
+          <el-select v-model="status" @change="fetchHistoricalData">
+            <el-option label="All" value=""></el-option>
+            <el-option label="Outstanding" value="1"></el-option>
+            <el-option label="Paid" value="3"></el-option>
+            <el-option label="Pending" value="2"></el-option>
+            <el-option label="Failed" value="4"></el-option>
+          </el-select>
+        </div>
+      </div>
       <el-divider></el-divider>
       <el-table
         :data="tableData"
@@ -104,6 +116,15 @@
           </template>
         </el-table-column>
         <el-table-column
+          label="Status"
+          width="180">
+          <template slot-scope="scope">
+            <el-tag :type="transactionStatusColor[scope.row.status]" class="w-full text-center uppercase">
+              <strong>{{ transactionStatus[scope.row.status] }}</strong>
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="created_at"
           label="Tanggal"
           width="220"
@@ -111,6 +132,16 @@
         >
           <template slot-scope="scope">
             {{ scope.row.created_at | formatDate }}
+          </template>
+        </el-table-column>
+        <el-table-column width="120" fixed="right">
+          <template slot-scope="scope">
+            <el-button
+              type="text"
+              class="w-full"
+              :disabled="scope.row.status !== 1"
+              @click="onHandlePay(scope.row)"
+            >Bayar</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -134,18 +165,52 @@
       </el-form>
       <el-button type="primary" class="py-2 w-full" :loading="loading" @click="submit">Submit</el-button>
     </el-dialog>
+    <el-dialog
+      :visible.sync="dialogPaymentResult"
+      width="320px"
+      :show-close="false"
+      @closed="onCloseDialogPayment"
+    >
+      <el-result
+        v-if="$route.hash === '#success'"
+        icon="success"
+        title="Pembayaran Berhasil"
+      >
+        <template slot="extra">
+          <el-button type="primary" size="medium" @click="dialogPaymentResult = false">Tutup</el-button>
+        </template>
+      </el-result>
+      <el-result
+        v-else
+        icon="error"
+        title="Terjadi kesalahan pada sistem"
+        subTitle="Silahkan coba beberapa saat lagi"
+      >
+        <template slot="extra">
+          <el-button type="primary" size="medium" @click="dialogPaymentResult = false">Tutup</el-button>
+        </template>
+      </el-result>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import wallet from '@/api/wallet';
-import { transactionType, transactionTypePrefix } from '@/constants/wallet';
+import {
+  transactionType,
+  transactionTypePrefix,
+  transactionStatusColor,
+  transactionStatus,
+} from '@/constants/wallet';
 
 export default {
   data() {
     return {
       transactionTypePrefix,
+      transactionStatus,
+      transactionStatusColor,
       loading: false,
+      status: '',
       tableData: [],
       total: 0,
       currentPage: 1,
@@ -165,6 +230,7 @@ export default {
         prop: 'created_at',
         order: 'descending',
       },
+      dialogPaymentResult: false,
     };
   },
   computed: {
@@ -174,6 +240,9 @@ export default {
   },
   created() {
     this.fetchHistoricalData();
+  },
+  mounted() {
+    this.dialogPaymentResult = this.$route.hash === '#success' || this.$route.hash === '#failed';
   },
   methods: {
     topup() {
@@ -191,6 +260,7 @@ export default {
           type: this.filterType,
           sort_by: this.sort.sort_by.join(','),
           sort_val: this.sort.sort_val.join(','),
+          status: this.status,
         };
         const res = await wallet.getWalletHistory(params);
         this.total = res.data.total;
@@ -208,16 +278,8 @@ export default {
         if (valid) {
           this.loading = true;
           try {
-            await wallet.topUpWallet(this.model);
-            await this.$store.dispatch('auth/introspect');
-            this.fetchHistoricalData();
-            this.dialogTopupVisible = false;
-            this.model.amount = null;
-            this.$notify({
-              type: 'success',
-              title: 'Sukses',
-              message: 'Topup saldo berhasil',
-            });
+            const res = await wallet.topUpWallet(this.model);
+            window.location.href = res.data.invoice_url;
           } catch (e) {
             if (e?.response?.data?.error?.amount) {
               this.$notify({
@@ -250,6 +312,12 @@ export default {
         this.sort.sort_val.push(sorts[event.order]);
       }
       return this.fetchHistoricalData();
+    },
+    onCloseDialogPayment() {
+      this.$router.push('/dashboard/wallet');
+    },
+    onHandlePay(row) {
+      window.location.href = row.invoice_url;
     },
   },
 };

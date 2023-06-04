@@ -25,3 +25,6 @@
 .text-danger {
   color: #ff4800;
 }
+.uppercase {
+  text-transform: uppercase;
+}

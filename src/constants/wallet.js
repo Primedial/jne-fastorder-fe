@@ -15,3 +15,17 @@ export const transactionTypePrefix = {
   [transactionType.BULK_DEDUCTION]: 'DEDUCTION',
   [transactionType.CASHBACK]: 'CASHBACK',
 };
+
+export const transactionStatus = {
+  1: 'Outstanding',
+  2: 'Pending',
+  3: 'Paid',
+  4: 'Failed',
+};
+
+export const transactionStatusColor = {
+  1: 'warn',
+  2: 'warn',
+  3: 'success',
+  4: 'danger',
+};
