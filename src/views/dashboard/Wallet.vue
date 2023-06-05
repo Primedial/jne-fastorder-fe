@@ -203,7 +203,7 @@
 
     <el-dialog
       :visible.sync="dialogWithdrawVisible"
-      title="Topup Saldo"
+      title="Tarik Saldo"
       width="30%"
       :close-on-click-modal="!loading"
       :show-close="!loading"
