@@ -21,7 +21,7 @@
           </el-button>
         </div>
         <div class="w-full">
-          <el-button type="primary" icon="el-icon-download" class="w-full ml-0">
+          <el-button type="primary" icon="el-icon-download" class="w-full ml-0" @click="withdraw">
             Tarik Saldo
           </el-button>
         </div>
@@ -64,6 +64,7 @@
             <el-option label="Paid" value="3"></el-option>
             <el-option label="Pending" value="2"></el-option>
             <el-option label="Failed" value="4"></el-option>
+            <el-option label="Expired" value="5"></el-option>
           </el-select>
         </div>
       </div>
@@ -125,6 +126,13 @@
           </template>
         </el-table-column>
         <el-table-column
+          label="Expire"
+          width="180">
+          <template slot-scope="scope">
+            <fo-countdown :data="scope.row.invoice_expiry_date" :status="scope.row.status"></fo-countdown>
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="created_at"
           label="Tanggal"
           width="220"
@@ -157,14 +165,6 @@
         <small>Total: <strong>{{ total }}</strong></small>
       </div>
     </el-card>
-    <el-dialog :visible.sync="dialogTopupVisible" title="Topup Saldo" width="30%">
-      <el-form ref="topup" :model="model">
-        <el-form-item prop="amount" label="Nominal">
-          <fo-input-number v-model="model.amount"></fo-input-number>
-        </el-form-item>
-      </el-form>
-      <el-button type="primary" class="py-2 w-full" :loading="loading" @click="submit">Submit</el-button>
-    </el-dialog>
     <el-dialog
       :visible.sync="dialogPaymentResult"
       width="320px"
@@ -191,6 +191,31 @@
         </template>
       </el-result>
     </el-dialog>
+
+    <el-dialog :visible.sync="dialogTopupVisible" title="Topup Saldo" width="30%" :close-on-click-modal="!loading" :show-close="!loading" :close-on-press-escape="!loading">
+      <el-form ref="topup" :model="model" :rules="topupRules">
+        <el-form-item prop="amount" label="Nominal">
+          <fo-input-number v-model="model.amount"></fo-input-number>
+        </el-form-item>
+      </el-form>
+      <el-button type="primary" class="py-2 w-full" :loading="loading" @click="submit">Submit</el-button>
+    </el-dialog>
+
+    <el-dialog
+      :visible.sync="dialogWithdrawVisible"
+      title="Topup Saldo"
+      width="30%"
+      :close-on-click-modal="!loading"
+      :show-close="!loading"
+      :close-on-press-escape="!loading"
+    >
+      <el-form ref="withdraw" :model="modelWithdraw" :rules="withdrawRules">
+        <el-form-item prop="amount" label="Nominal">
+          <fo-input-number v-model="modelWithdraw.amount"></fo-input-number>
+        </el-form-item>
+      </el-form>
+      <el-button type="primary" class="py-2 w-full" :loading="loading" @click="submitWithdraw">Submit</el-button>
+    </el-dialog>
   </div>
 </template>
 
@@ -205,6 +230,23 @@ import {
 
 export default {
   data() {
+    const minAmount = (_, value, cb) => {
+      const val = Number(value);
+      if (val < 10000) {
+        cb(new Error('Minimal nominal topup Rp10.000'));
+      } else {
+        cb();
+      }
+    };
+    const maxAmount = (_, value, cb) => {
+      const val = Number(value);
+      if (val > Number(this.user.wallet.amount)) {
+        cb(new Error('Saldo tidak mencukupi'));
+      } else {
+        cb();
+      }
+    };
+
     return {
       transactionTypePrefix,
       transactionStatus,
@@ -215,7 +257,11 @@ export default {
       total: 0,
       currentPage: 1,
       dialogTopupVisible: false,
+      dialogWithdrawVisible: false,
       model: {
+        amount: null,
+      },
+      modelWithdraw: {
         amount: null,
       },
       search: '',
@@ -231,6 +277,19 @@ export default {
         order: 'descending',
       },
       dialogPaymentResult: false,
+      topupRules: {
+        amount: [
+          { required: true, message: 'Nominal wajib diisi', trigger: 'blur' },
+          { validator: minAmount, trigger: 'blur' },
+        ],
+      },
+      withdrawRules: {
+        amount: [
+          { required: true, message: 'Nominal wajib diisi', trigger: 'blur' },
+          { validator: minAmount, trigger: 'blur' },
+          { validator: maxAmount, trigger: 'blur' },
+        ],
+      },
     };
   },
   computed: {
@@ -247,6 +306,9 @@ export default {
   methods: {
     topup() {
       this.dialogTopupVisible = true;
+    },
+    withdraw() {
+      this.dialogWithdrawVisible = true;
     },
     tagType(row) {
       return [transactionType.TOPUP, transactionType.CASHBACK, transactionType.CANCEL_ORDER].includes(row.transaction_type)
@@ -292,6 +354,27 @@ export default {
         }
       });
     },
+    submitWithdraw() {
+      this.$refs.withdraw.validate(async (valid) => {
+        if (valid) {
+          this.loading = true;
+          try {
+            await wallet.withdraw(this.modelWithdraw);
+            this.fetchHistoricalData();
+            this.dialogWithdrawVisible = false;
+            this.modelWithdraw.amount = 0;
+          } catch (e) {
+            if (e?.response?.data?.error?.amount) {
+              this.$notify({
+                type: 'error',
+                message: e?.response?.data?.error?.amount.join(','),
+              });
+            }
+          }
+          this.loading = false;
+        }
+      })
+    },
     onChangeSort(event) {
       const sorts = {
         ascending: 1,
@@ -318,6 +401,11 @@ export default {
     },
     onHandlePay(row) {
       window.location.href = row.invoice_url;
+    },
+    onTimeout() {
+      setTimeout(() => {
+        this.fetchHistoricalData()
+      }, 2000);
     },
   },
 };

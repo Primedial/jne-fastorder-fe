@@ -12,6 +12,16 @@ async function topUpWallet(data) {
   return res.data;
 }
 
+async function withdraw(data) {
+  const res = await Vue.axios({
+    url: `${BASE_URL}/withdraw`,
+    method: 'PUT',
+    data,
+  });
+
+  return res.data;
+}
+
 async function getWalletHistory(params) {
   const res = await Vue.axios({
     url: `${BASE_URL}/history`,
@@ -25,4 +35,5 @@ async function getWalletHistory(params) {
 export default {
   topUpWallet,
   getWalletHistory,
+  withdraw,
 };

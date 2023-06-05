@@ -21,11 +21,15 @@ export const transactionStatus = {
   2: 'Pending',
   3: 'Paid',
   4: 'Failed',
+  5: 'Expired',
+  6: 'Completed',
 };
 
 export const transactionStatusColor = {
-  1: 'warn',
-  2: 'warn',
+  1: 'info',
+  2: 'warning',
   3: 'success',
   4: 'danger',
+  5: 'danger',
+  6: 'success',
 };
