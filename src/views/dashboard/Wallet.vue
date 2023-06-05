@@ -220,6 +220,7 @@
 </template>
 
 <script>
+import auth from '@/api/auth';
 import wallet from '@/api/wallet';
 import {
   transactionType,
@@ -361,6 +362,7 @@ export default {
           try {
             await wallet.withdraw(this.modelWithdraw);
             this.fetchHistoricalData();
+            await auth.introspect();
             this.dialogWithdrawVisible = false;
             this.modelWithdraw.amount = 0;
           } catch (e) {
