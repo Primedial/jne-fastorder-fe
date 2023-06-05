@@ -65,6 +65,7 @@
             <el-option label="Pending" value="2"></el-option>
             <el-option label="Failed" value="4"></el-option>
             <el-option label="Expired" value="5"></el-option>
+            <el-option label="Completed" value="6"></el-option>
           </el-select>
         </div>
       </div>
