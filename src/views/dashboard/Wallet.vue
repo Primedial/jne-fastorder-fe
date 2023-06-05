@@ -363,7 +363,7 @@ export default {
           try {
             await wallet.withdraw(this.modelWithdraw);
             this.fetchHistoricalData();
-            await auth.introspect();
+            await this.$store.dispatch('auth/introspect');
             this.dialogWithdrawVisible = false;
             this.modelWithdraw.amount = 0;
           } catch (e) {
