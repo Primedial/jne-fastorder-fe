@@ -13,6 +13,9 @@
 .flex {
   display: flex;
 }
+.flex-i {
+  display: flex !important;
+}
 .justify-start {
   justify-content: flex-start;
 }

@@ -225,6 +225,7 @@
               :label="account.id"
               border
               class="w-full m-0-i flex items-center py-1-i h-auto-i"
+              style="display: flex !important;"
             >
               <template>
                 <span class="block mb-1 bold">{{ account.bank.name }}</span>
