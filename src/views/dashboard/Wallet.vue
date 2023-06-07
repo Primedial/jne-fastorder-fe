@@ -209,19 +209,37 @@
       :close-on-click-modal="!loading"
       :show-close="!loading"
       :close-on-press-escape="!loading"
+      @closed="onCloseDialog"
     >
-      <el-form ref="withdraw" :model="modelWithdraw" :rules="withdrawRules">
+      <el-form ref="withdraw" :model="modelWithdraw" :rules="withdrawRules" label-position="top">
         <el-form-item prop="amount" label="Nominal">
           <fo-input-number v-model="modelWithdraw.amount"></fo-input-number>
         </el-form-item>
+        <el-form-item prop="bank_account_id" label="Rekening">
+          <div
+            v-for="account in user.bank_accounts"
+            :key="account.bank.code"
+            class="mb-2">
+            <el-radio
+              v-model="modelWithdraw.bank_account_id"
+              :label="account.id"
+              border
+              class="w-full m-0-i flex items-center py-1-i h-auto-i"
+            >
+              <template>
+                <span class="block mb-1 bold">{{ account.bank.name }}</span>
+                <small class="text-gray">{{ account.account_name }}</small>
+              </template>
+            </el-radio>
+          </div>
+        </el-form-item>
       </el-form>
-      <el-button type="primary" class="py-2 w-full" :loading="loading" @click="submitWithdraw">Submit</el-button>
+      <el-button type="primary" class="py-2 w-full" :loading="loading" @click="submitWithdraw">Tarik Saldo</el-button>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import auth from '@/api/auth';
 import wallet from '@/api/wallet';
 import {
   transactionType,
@@ -265,6 +283,7 @@ export default {
       },
       modelWithdraw: {
         amount: null,
+        bank_account_id: null,
       },
       search: '',
       sort: {
@@ -290,6 +309,9 @@ export default {
           { required: true, message: 'Nominal wajib diisi', trigger: 'blur' },
           { validator: minAmount, trigger: 'blur' },
           { validator: maxAmount, trigger: 'blur' },
+        ],
+        bank_account_id: [
+          { required: true, message: 'Rekening wajib diisi', trigger: 'blur' },
         ],
       },
     };
@@ -356,6 +378,12 @@ export default {
         }
       });
     },
+    onCloseDialog() {
+      this.modelWithdraw = {
+        amount: 0,
+        bank_account_id: null,
+      };
+    },
     submitWithdraw() {
       this.$refs.withdraw.validate(async (valid) => {
         if (valid) {
@@ -365,7 +393,6 @@ export default {
             this.fetchHistoricalData();
             await this.$store.dispatch('auth/introspect');
             this.dialogWithdrawVisible = false;
-            this.modelWithdraw.amount = 0;
           } catch (e) {
             if (e?.response?.data?.error?.amount) {
               this.$notify({
@@ -400,7 +427,9 @@ export default {
       return this.fetchHistoricalData();
     },
     onCloseDialogPayment() {
-      this.$router.push('/dashboard/wallet');
+      this.model = {
+        amount: 0,
+      };
     },
     onHandlePay(row) {
       window.location.href = row.invoice_url;
