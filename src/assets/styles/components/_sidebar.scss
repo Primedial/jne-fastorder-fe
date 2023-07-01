@@ -4,5 +4,30 @@
   .el-menu {
     border-right: unset;
     height: 100%;
+
+    .el-menu-item {
+      color: rgba(0,0,0,0.5);
+
+      &.is-active {
+        color: #000;
+        font-weight: 700;
+      }
+    }
+    .el-submenu {
+      color: rgba(0,0,0,0.5);
+
+      .el-submenu__title {
+        color: rgba(0,0,0,0.5);
+      }
+
+      &.is-active {
+        color: #000;
+
+        .el-submenu__title {
+          color: #000;
+          font-weight: 700;
+        }
+      }
+    }
   }
 }

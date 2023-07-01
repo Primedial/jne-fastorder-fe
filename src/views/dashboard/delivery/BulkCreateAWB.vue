@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="pt-2">
     <h1>Resi Masal</h1>
     <el-card>
       <div class="flex items-center justify-between">

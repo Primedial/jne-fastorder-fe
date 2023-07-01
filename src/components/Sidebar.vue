@@ -15,9 +15,9 @@
         @close="handleClose"
         router
       >
-        <div class="mt-2 p-2">
+        <div class="mt-3 p-2">
           <el-image
-            style="width: 90%; height: auto"
+            style="width: 70%; height: auto"
             src="https://demo.permudahdakwah.com/images/fastorder.png"
             fit="cover"
             class="block m-auto"
@@ -31,11 +31,10 @@
             src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
           ></el-avatar>
         </div>
-        <small class="text-center text-gray mb-1 mt-2 block">Welcome back,</small>
-        <h4 class="text-center mt-0 mb-4">{{ user.name }}</h4>
+        <h4 class="text-center mt-2 mb-4">{{ user.name }}</h4>
         <div class="my-2">
-          <h2 class="text-center mb-0">{{ user?.wallet?.amount | formatCurrency }}</h2>
-          <small class="text-center text-gray block mt-1">Total Saldo</small>
+          <small class="text-center text-gray block">Saldo Dompet</small>
+          <h2 class="text-center mt-1">{{ user?.wallet?.amount | formatCurrency }}</h2>
         </div>
         <div
           v-for="(menu, i) in menus"
@@ -43,7 +42,7 @@
         >
           <el-submenu v-if="menu.children" :index="`/dashboard/${menu.path}`" @click.self="isCollapse = true">
             <template slot="title">
-              <eva-icon :name="menu.icon" class="mr-1 mb-1"></eva-icon>
+              <eva-icon :name="menu.icon" class="mr-1 mb-1" :fill="fill(menu)"></eva-icon>
               <span slot="title">{{ menu.title }}</span>
             </template>
             <el-menu-item-group>
@@ -52,13 +51,13 @@
                 :key="`sub-${i}-${c}`"
                 :index="`/dashboard/${menu.path}/${sub.path}`"
               >
-                <eva-icon v-if="sub.icon" :name="sub.icon" class="mr-1 mb-1"></eva-icon>
+                <eva-icon v-if="sub.icon" :name="sub.icon" class="mr-1 mb-1" :fill="fill(menu)"></eva-icon>
                 <span slot="title">{{ sub.title }}</span>
               </el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <el-menu-item v-else :index="`/dashboard/${menu.path}`">
-            <eva-icon :name="menu.icon" class="mr-1 mb-1"></eva-icon>
+            <eva-icon :name="menu.icon" class="mr-1 mb-1" :fill="fill(menu)"></eva-icon>
             <span slot="title">{{ menu.title }}</span>
           </el-menu-item>
         </div>
@@ -90,6 +89,10 @@ export default {
     },
   },
   methods: {
+    fill(menu) {
+      console.log(menu);
+      return this.$route.path.split('/').includes(menu.path) ? '#FE634E' : 'rgba(0,0,0,0.2)';
+    },
     handleOpen() {
       this.isCollapse = false;
     },

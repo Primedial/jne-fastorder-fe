@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="pt-2">
     <h1>Riwayat Pengiriman</h1>
     <el-card class="mb-2">
       <el-form :model="searchModel" label-position="top">

@@ -19,4 +19,12 @@ export default {
 
     return res.data;
   },
+  async detail(id) {
+    const res = await Vue.http({
+      url: `/v1/user/${id}`,
+      method: 'GET',
+    });
+
+    return res.data;
+  },
 };

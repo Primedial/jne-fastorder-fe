@@ -1,15 +1,20 @@
 <template>
   <div class="flex h-screen w-screen items-center justify-center">
     <div class="login-container">
-      <el-card>
+      <div class="box top-left"></div>
+      <div class="box top-left-sm"></div>
+      <el-card style="padding: 24px 16px">
         <el-image
-          style="width: 50%; height: auto"
+          style="width: 45%; height: auto;margin-bottom: 32px;"
           src="https://demo.permudahdakwah.com/images/fastorder.png"
           fit="cover"
           class="block m-auto"
         ></el-image>
-        <h4 class="text-center">Login ke Akun Anda</h4>
-        <el-form ref="form" :model="model" :rules="rules" class="mb-2" @keyup.native.enter="submit">
+        <div class="my-2">
+          <h4 class="my-1">Welcome to Fastorder! 📦</h4>
+          <small class="text-gray">Silahkan login ke akun anda untuk memulai pengiriman</small>
+        </div>
+        <el-form autocompleete="off" ref="form" :model="model" :rules="rules" class="mb-2" @keyup.native.enter="submit">
           <el-form-item prop="email" label="Email">
             <el-input v-model="model.email" clearable></el-input>
           </el-form-item>
@@ -17,9 +22,14 @@
             <el-input v-model="model.password" type="password" clearable></el-input>
           </el-form-item>
         </el-form>
-        <el-button type="text" class="mb-2" @click="$router.push('reset-password')">Lupa password?</el-button>
-        <el-button type="primary" class="w-full" @click="submit">Login</el-button>
+        <div class="flex justify-end mb-1">
+          <el-button type="text" @click="$router.push('reset-password')">Lupa password?</el-button>
+        </div>
+        <el-button type="primary" class="w-full ml-0-i" @click="submit">Login</el-button>
       </el-card>
+      <div class="box bottom-right">
+        <div class="box-inner"></div>
+      </div>
     </div>
   </div>
 </template>

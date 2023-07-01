@@ -2,7 +2,7 @@ export const navMenu = [
   {
     path: 'overview',
     title: 'Dashboard',
-    icon: 'activity-outline',
+    icon: 'pie-chart-outline',
   },
   {
     path: 'monitoring',
@@ -17,7 +17,7 @@ export const navMenu = [
   {
     path: 'shipping',
     title: 'Pengiriman',
-    icon: 'swap-outline',
+    icon: 'cube-outline',
     children: [
       {
         path: 'ongkos-kirim',

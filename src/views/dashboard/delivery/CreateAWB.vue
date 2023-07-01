@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="pt-2">
     <h1>Resi Satuan</h1>
     <el-card>
       <el-steps :active="currentStep" align-center>

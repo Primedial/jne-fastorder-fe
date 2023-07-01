@@ -60,7 +60,13 @@ export default {
       }
     };
     return {
-      model: {},
+      model: {
+        name: '',
+        email: '',
+        user_type_id: null,
+        phone_no: '',
+        address: '',
+      },
       userTypes: [],
       loading: false,
       rules: {
@@ -82,8 +88,15 @@ export default {
   },
   created() {
     this.fetchUserTypes();
+    if (this.$route.params.id) {
+      this.fetchDetail();
+    }
   },
   methods: {
+    async fetchDetail() {
+      const res = await user.detail(this.$route.params.id);
+      this.model = { ...res.data, phone_no: res.data.phone_no.replaceAll('+62', '') };
+    },
     async fetchUserTypes() {
       const res = await userType.getAll();
       this.userTypes = res.data.data;
@@ -117,6 +130,7 @@ export default {
           title: 'Sukses',
           message: 'Informasi berhasil disimpan',
         });
+        await this.fetchDetail();
       } catch (e) {
         //
       }

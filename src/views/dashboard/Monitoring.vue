@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="pt-1">
     <el-card class="bg-primary mt-3 mb-2">
       <h4 class="text-light">Total Kiriman</h4>
       <h1 class="text-right text-light">{{ total | formatNumber }}</h1>

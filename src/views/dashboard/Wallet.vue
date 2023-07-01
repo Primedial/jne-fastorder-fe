@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="pt-2">
     <h1>Saldo</h1>
     <el-row :gutter="20">
       <el-col :xs="24" :sm="24" :md="12" :lg="8" :xl="8" class="mb-2">
@@ -218,7 +218,7 @@
         <el-form-item prop="bank_account_id" label="Rekening">
           <div
             v-for="account in user.bank_accounts"
-            :key="account.bank.code"
+            :key="account.account_number"
             class="mb-2">
             <el-radio
               v-model="modelWithdraw.bank_account_id"
@@ -229,6 +229,7 @@
             >
               <template>
                 <span class="block mb-1 bold">{{ account.bank.name }}</span>
+                <small class="text-gray block my-1">{{ account.account_number }}</small>
                 <small class="text-gray">{{ account.account_name }}</small>
               </template>
             </el-radio>
@@ -367,6 +368,7 @@ export default {
           try {
             const res = await wallet.topUpWallet(this.model);
             window.location.href = res.data.invoice_url;
+            this.dialogTopupVisible = false;
           } catch (e) {
             if (e?.response?.data?.error?.amount) {
               this.$notify({
@@ -404,7 +406,7 @@ export default {
           }
           this.loading = false;
         }
-      })
+      });
     },
     onChangeSort(event) {
       const sorts = {
@@ -437,7 +439,7 @@ export default {
     },
     onTimeout() {
       setTimeout(() => {
-        this.fetchHistoricalData()
+        this.fetchHistoricalData();
       }, 2000);
     },
   },

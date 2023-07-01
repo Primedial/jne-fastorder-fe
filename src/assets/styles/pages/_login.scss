@@ -1,4 +1,49 @@
 .login-container {
-  width: 400px;
+  position: relative;
+  width: 375px;
   margin: auto;
+
+  .box {
+    position: absolute;
+    height: 200px;
+    width: 200px;
+    border-radius: 12px;
+    background-color: $primary;
+    z-index: -5;
+    opacity: .21;
+
+    &.top-left {
+      top: -10%;
+      left: -10%;
+    }
+    &.top-left-sm {
+      top: -17%;
+      left: 10%;
+      height: 160px;
+      width: 160px;
+      border-radius: 16px;
+      border: 1.5px solid $primary;
+      background: transparent;
+    }
+    &.bottom-right {
+      height: 260px;
+      width: 260px;
+      bottom: -15%;
+      right: -30%;
+      border: 2px dashed $primary;
+      background-color: transparent;
+      border-radius: 16px;
+  
+      .box-inner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        height: 180px;
+        width: 180px;
+        border-radius: 12px;
+        background-color: $primary;
+        transform: translate(-50%, -50%);
+      }
+    }
+  }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="pt-2">
     <h1>Cek Ongkir</h1>
     <el-card>
       <el-form ref="form" :model="model" :rules="rules" @keyup.native.enter="submit">
