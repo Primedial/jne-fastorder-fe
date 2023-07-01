@@ -98,7 +98,7 @@ export default {
       }
     },
     async handlePageChange(page) {
-      await this.$router.push({ name: 'dashboard-monitoring', query: { page } });
+      await this.$router.push({ name: 'dashboard-contact', query: { page } });
       window.scrollTo({
         top: 0,
         behavior: 'smooth',
