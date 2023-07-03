@@ -66,7 +66,7 @@ export default {
         this.$store.commit('auth/SET_LOGGED_IN', false);
         this.$router.push('/login');
       } catch (e) {
-        console.log(e)
+        // do nothing
       }
     },
   },

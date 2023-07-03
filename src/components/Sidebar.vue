@@ -90,7 +90,6 @@ export default {
   },
   methods: {
     fill(menu) {
-      console.log(menu);
       return this.$route.path.split('/').includes(menu.path) ? '#FE634E' : 'rgba(0,0,0,0.2)';
     },
     handleOpen() {

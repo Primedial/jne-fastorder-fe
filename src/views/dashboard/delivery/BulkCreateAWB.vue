@@ -5,7 +5,7 @@
       <div class="flex items-center justify-between">
         <h2 class="text-primary">Upload Data Pengiriman</h2>
         <div class="flex">
-          <el-button icon="el-icon-download">Download Template</el-button>
+          <el-button icon="el-icon-download" :loading="loading" @click="downloadTemplate">Download Template</el-button>
           <el-button
             type="primary"
             icon="el-icon-check"
@@ -74,7 +74,9 @@
               </el-table-column>
               <el-table-column label="COD" width="150">
                 <template slot-scope="scope">
-                  <el-checkbox v-model="scope.row.is_cod" disabled></el-checkbox>
+                  <el-tag :type="scope.row.is_cod ? 'success' : 'danger'">
+                    {{ scope.row.is_cod ? 'YES' : 'NO' }}
+                  </el-tag>
                 </template>
               </el-table-column>
               <el-table-column label="Berat (Kg)" width="150">
@@ -154,7 +156,6 @@
 
 <script>
 import { read, utils } from 'xlsx';
-import { vehicle } from '@/constants/awb';
 import awb from '@/api/awb';
 import validator from '@/helpers/validator';
 
@@ -312,7 +313,7 @@ export default {
           'min.weight': 'Berat Barang tidak boleh 0 (Nol)',
         };
         await Promise.all(contents.map(async (row, i) => {
-          await validator({ body: row, rules, message }, (err, status) => {
+          await validator({ body: row, rules, message }, (err) => {
             if (err) {
               Object.keys(err.errors).forEach((key) => {
                 this.errors.push({ row: i + 2, message: err.errors[key] });
@@ -343,7 +344,7 @@ export default {
           };
         }));
       } catch (e) {
-        console.log(e);
+        // do nothing
       }
       this.loading = false;
     },
@@ -372,6 +373,20 @@ export default {
           this.loading = false;
         }
       });
+    },
+    async downloadTemplate() {
+      this.loading = true;
+      try {
+        const res = await this.axios.get('/v1/download?key=Bulk_Upload_AWB_Template.xlsx');
+        const { data } = res.data;
+        window.open(data, '_blank');
+      } catch (e) {
+        this.$notify.error({
+          title: 'Error',
+          message: e.message,
+        });
+      }
+      this.loading = false;
     },
   },
 };

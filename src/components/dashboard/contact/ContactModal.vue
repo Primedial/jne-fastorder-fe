@@ -144,9 +144,9 @@ export default {
     title() {
       let prefix = 'Tambah';
       if (this.model.id) {
-        prefix = 'Edit'
+        prefix = 'Edit';
       }
-      return `${prefix} Kontak`
+      return `${prefix} Kontak`;
     },
     inputVal: {
       get() {
@@ -193,7 +193,7 @@ export default {
         if (valid) {
           this.$emit('submit');
         }
-      })
+      });
     },
   },
 };

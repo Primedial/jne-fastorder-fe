@@ -30,7 +30,7 @@
                     remote
                     reserve-keyword
                     :remote-method="($event) => remoteMethodContact($event, 'shipper')"
-                    @change="onHandleChange"
+                    @change="($event) => onHandleChange($event, 'shipper')"
                   >
                     <el-option
                       v-for="item in shipperContact"
@@ -134,7 +134,7 @@
                     placeholder="Pilih penerima"
                     :remote-method="($event) => remoteMethodContact($event, 'receiver')"
                     class="w-full"
-                    value-key="city_code"
+                    value-key="id"
                     @change="($event) => onHandleChange($event, 'receiver')"
                   >
                     <el-option
@@ -235,6 +235,7 @@
                   <el-option
                     label="COD"
                     :value="serviceType.COD"
+                    disabled
                   >
                   </el-option>
                 </el-select>
@@ -560,7 +561,7 @@ export default {
         receiver_contact_id: null,
         shipment_code: null,
         vehicle: null,
-        cod: null,
+        cod: 1,
         pickup_type: null,
         agent: null,
         weight: null,
@@ -777,7 +778,7 @@ export default {
         } else if (type === 'receiver') {
           this.selectedReceiver = { ...event };
         }
-      } else if (!type) {
+      } else {
         if (event.contact_type === contactUsageType.RECEIVER) {
           this.selectedReceiver = { ...event };
         } else {
@@ -798,11 +799,11 @@ export default {
     async remoteMethodContact(str, type) {
       if (type === 'shipper') {
         this.searchShipper = str;
-        const res = await contact.getContact({ q: str, search_by: 'name', type: contactUsageType.SHIPPER })
+        const res = await contact.getContact({ q: str, search_by: 'name', type: contactUsageType.SHIPPER });
         this.shipperContact = res.data.data;
       } else {
         this.searchReceiver = str;
-        const res = await contact.getContact({ q: str, search_by: 'name', type: contactUsageType.RECEIVER })
+        const res = await contact.getContact({ q: str, search_by: 'name', type: contactUsageType.RECEIVER });
         this.receiverContact = res.data.data;
       }
     },

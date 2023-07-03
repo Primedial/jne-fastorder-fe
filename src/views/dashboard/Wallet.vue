@@ -368,7 +368,6 @@ export default {
           try {
             const res = await wallet.topUpWallet(this.model);
             window.location.href = res.data.invoice_url;
-            this.dialogTopupVisible = false;
           } catch (e) {
             if (e?.response?.data?.error?.amount) {
               this.$notify({
@@ -377,7 +376,6 @@ export default {
               });
             }
           }
-          this.loading = false;
         }
       });
     },
